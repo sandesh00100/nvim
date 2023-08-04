@@ -1,8 +1,4 @@
 vim.g.mapleader = " "
 vim.keymap.set("n", "<leader>pv", vim.cmd.Ex)
--- Without motions in normal mode
 vim.keymap.set("n", "H", "^")
 vim.keymap.set("n", "L", "$")
--- Operation pending for motions
-vim.keymap.set("o", "H", "^")
-vim.keymap.set("o", "L", "$")
