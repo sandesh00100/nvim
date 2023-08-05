@@ -28,6 +28,7 @@ return require('packer').startup(function(use)
 		requires = {
 			-- LSP Support
 			{'neovim/nvim-lspconfig'},             -- Required
+			-- All mason files are in ~/.local/share/nvim/mason/bin
 			{'williamboman/mason.nvim'},           -- Optional
 			{'williamboman/mason-lspconfig.nvim'}, -- Optional
 
@@ -53,7 +54,5 @@ return require('packer').startup(function(use)
 	})
 	-- Gruv box theme
 	use { "ellisonleao/gruvbox.nvim" }
-	-- Java LSP
-	use { 'mfussenegger/nvim-jdtls'	 }
 end)
 
