@@ -21,7 +21,6 @@ local config = {
     '--add-opens', 'java.base/java.util=ALL-UNNAMED',
     '--add-opens', 'java.base/java.lang=ALL-UNNAMED',
     -- 💀
-    '-javaagent:' .. jdtls_path .. '/lombok.jar',
     '-jar', plugins_path .. '/org.eclipse.equinox.launcher_1.6.500.v20230622-2056.jar',
          -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                       ^^^^^^^^^^^^^^
          -- Must point to the                                                     Change this to
