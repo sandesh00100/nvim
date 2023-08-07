@@ -1,4 +1,3 @@
--- Installed from mason
 local jdtls_path = '/Users/sandeshshrestha/.local/share/nvim/mason/packages/jdtls' 
 local plugins_path = jdtls_path .. '/plugins'
 -- See `:help vim.lsp.start_client` for an overview of the supported `config` options.

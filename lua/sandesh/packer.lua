@@ -54,5 +54,6 @@ return require('packer').startup(function(use)
 	})
 	-- Gruv box theme
 	use { "ellisonleao/gruvbox.nvim" }
+	use {'mfussenegger/nvim-jdtls'}
 end)
 
