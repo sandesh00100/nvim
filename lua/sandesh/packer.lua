@@ -55,5 +55,13 @@ return require('packer').startup(function(use)
 	-- Gruv box theme
 	use { "ellisonleao/gruvbox.nvim" }
 	use {'mfussenegger/nvim-jdtls'}
+	use {'mfussenegger/nvim-dap'}
+	use({
+		"neanias/everforest-nvim",
+		-- Optional; default configuration will be used if setup isn't called.
+		config = function()
+			require("everforest").setup()
+		end,
+	})
 end)
 
