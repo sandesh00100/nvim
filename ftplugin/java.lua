@@ -131,6 +131,16 @@ config['on_attach'] = function(client, bufnr)
   vim.keymap.set('n', '<leader>tc', jdtls.test_class, {});
   vim.keymap.set('n', '<leader>tm', jdtls.test_nearest_method, {});
   vim.keymap.set('n', '<leader>io', jdtls.organize_imports, {});
+  local opts = { noremap=true, silent=true }
+
+  local function quickfix()
+	  vim.lsp.buf.code_action({
+		  filter = function(a) return a.isPreferred end,
+		  apply = true
+	  })
+  end
+
+  vim.keymap.set('n', '<leader>qx', quickfix, opts)
   require "lsp_signature".on_attach({
     bind = true, -- This is mandatory, otherwise border config won't get registered.
     floating_window_above_cur_line = false,
