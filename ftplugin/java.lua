@@ -3,7 +3,7 @@ local jdtls_path = data_path .. "/mason/packages/jdtls"
 local plugins_path = jdtls_path .. "/plugins"
 local jdtls = require('jdtls')
 local root_markers = { "mvnw", "gradlew", "pom.xml", "build.gradle" }
-local root_dir = require("jdtls.setup").find_root(root_markers)
+local root_dir = jdtls.setup.find_root(root_markers)
 local project_name = vim.fn.fnamemodify(vim.fn.getcwd(), ':p:h:t')
 local workspace_dir = data_path .. '/workspace/'.. project_name
 local java_home = '/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home'
@@ -126,7 +126,7 @@ local config = {
 
 config['on_attach'] = function(client, bufnr)
   jdtls.setup_dap({hotcodereplace='auto'})
-  require('jdtls.dap').setup_dap_main_class_configs()
+  jdtls.dap.setup_dap_main_class_configs()
   require'keymaps'.map_java_keys(bufnr);
   vim.keymap.set('n', '<leader>tc', jdtls.test_class, {});
   vim.keymap.set('n', '<leader>tm', jdtls.test_nearest_method, {});
