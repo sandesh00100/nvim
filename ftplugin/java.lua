@@ -124,24 +124,44 @@ local config = {
   },
 }
 
+local dap = require("dap")
+vim.keymap.set('n', '<leader>tc', jdtls.test_class, {});
+vim.keymap.set('n', '<leader>tm', jdtls.test_nearest_method, {});
+vim.keymap.set('n', '<leader>io', jdtls.organize_imports, {});
+vim.keymap.set('n', '<leader>db', function ()
+	local port = vim.fn.input("Port (Default=5005) >")
+	if port == nil or port == '' then
+		port = '5005'
+	end
+	dap.configurations.java = {
+		{
+			type = 'java';
+			request = 'attach';
+			name = 'Attach to process';
+			hostname = 'localhost';
+			port = port;
+		}
+	}
+	dap.continue()
+end)
+
+vim.keymap.set('n', '<F5>', dap.continue, {});
+vim.keymap.set('n', '<F7>', dap.step_into, {});
+vim.keymap.set('n', '<F8>', dap.step_over, {});
+vim.keymap.set('n', '<F9>', dap.step_out, {});
+
+vim.keymap.set('n', '<leader>bp', dap.toggle_breakpoint, {});
+vim.keymap.set('n', '<leader>rp', dap.repl.open, {});
+
+
+-- TODO: Add cmp for dap and dap ui
+-- TODO: Need to follow https://www.youtube.com/watch?v=kbRIosrvof0&t=489s for having method level debug 
+-- TODO: Setting up debugger, might want to move some of this into it's own lua file
 config['on_attach'] = function(client, bufnr)
   jdtls.setup_dap({hotcodereplace='auto'})
   jdtls.dap.setup_dap_main_class_configs()
-  require'keymaps'.map_java_keys(bufnr);
-  vim.keymap.set('n', '<leader>tc', jdtls.test_class, {});
-  vim.keymap.set('n', '<leader>tm', jdtls.test_nearest_method, {});
-  vim.keymap.set('n', '<leader>io', jdtls.organize_imports, {});
-  local opts = { noremap=true, silent=true }
-
-  local function quickfix()
-	  vim.lsp.buf.code_action({
-		  filter = function(a) return a.isPreferred end,
-		  apply = true
-	  })
-  end
-
-  vim.keymap.set('n', '<leader>qx', quickfix, opts)
-  require "lsp_signature".on_attach({
+  require("javaKeyMaps").map_java_keys(bufnr);
+  require("lsp_signature").on_attach({
     bind = true, -- This is mandatory, otherwise border config won't get registered.
     floating_window_above_cur_line = false,
     padding = '',

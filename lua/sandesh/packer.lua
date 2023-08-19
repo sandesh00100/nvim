@@ -54,8 +54,11 @@ return require('packer').startup(function(use)
 	})
 	-- Gruv box theme
 	use { "ellisonleao/gruvbox.nvim" }
+	-- Java lsp
 	use {'mfussenegger/nvim-jdtls'}
+	-- Debugging
 	use {'mfussenegger/nvim-dap'}
+	-- use {'rcarriga/cmp-dap'}
 	use({
 		"neanias/everforest-nvim",
 		-- Optional; default configuration will be used if setup isn't called.
@@ -63,5 +66,10 @@ return require('packer').startup(function(use)
 			require("everforest").setup()
 		end,
 	})
+	-- Auto pair characters like '{' or '"' etc
+	use {
+		"windwp/nvim-autopairs",
+		config = function() require("nvim-autopairs").setup {} end
+	}
 end)
 
