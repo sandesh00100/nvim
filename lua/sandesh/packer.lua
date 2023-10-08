@@ -38,20 +38,6 @@ return require('packer').startup(function(use)
 			{'L3MON4D3/LuaSnip'},     -- Required
 		}
 	}
-	use({
-		"epwalsh/obsidian.nvim",
-		requires = {
-			-- Required.
-			"nvim-lua/plenary.nvim",
-			-- see below for full list of optional dependencies 👇
-		},
-		config = function()
-			require("obsidian").setup({
-				dir = "~/Documents/Dropbox/Notes",
-				-- see below for full list of options 👇
-			})
-		end,
-	})
 	-- Gruv box theme
 	use { "ellisonleao/gruvbox.nvim" }
 	-- Java lsp
@@ -70,6 +56,12 @@ return require('packer').startup(function(use)
 	use {
 		"windwp/nvim-autopairs",
 		config = function() require("nvim-autopairs").setup {} end
+	}
+	use {
+		'numToStr/Comment.nvim',
+		config = function()
+			require('Comment').setup()
+		end
 	}
 end)
 
