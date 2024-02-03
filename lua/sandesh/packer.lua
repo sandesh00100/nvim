@@ -63,5 +63,8 @@ return require('packer').startup(function(use)
 			require('Comment').setup()
 		end
 	}
+	use { 
+		'lewis6991/gitsigns.nvim'
+	}
 end)
 
