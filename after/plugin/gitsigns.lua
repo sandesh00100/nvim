@@ -41,3 +41,7 @@ require('gitsigns').setup {
     enable = false
   },
 }
+
+vim.api.nvim_set_keymap('n', '<leader>gst', ':Gitsigns toggle_deleted<CR>', { noremap = true})
+
+
