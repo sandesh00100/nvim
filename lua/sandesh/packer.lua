@@ -65,5 +65,18 @@ return require('packer').startup(function(use)
 	use { 
 		'lewis6991/gitsigns.nvim'
 	}
+	-- ChatGPT
+	use({
+		"jackMort/ChatGPT.nvim",
+		config = function()
+			require("chatgpt").setup()
+		end,
+		requires = {
+			"MunifTanjim/nui.nvim",
+			"nvim-lua/plenary.nvim",
+			"folke/trouble.nvim",
+			"nvim-telescope/telescope.nvim"
+		}
+	})
 end)
 
