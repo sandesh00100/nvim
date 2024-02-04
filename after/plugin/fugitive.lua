@@ -9,5 +9,5 @@ vim.api.nvim_set_keymap('n', '<leader>gtl', ':Git log<CR>', { noremap = true})
 vim.api.nvim_set_keymap('n', '<leader>gtb', ':Git blame<CR>', { noremap = true})
 vim.api.nvim_set_keymap('n', '<leader>gtc', ':Git commit<CR>', { noremap = true})
 
-vim.api.nvim_set_keymap('n', '<leader>gtl', ':Git pull --rebase origin main<CR>', { noremap = true})
+vim.api.nvim_set_keymap('n', '<leader>grb', ':Git pull --rebase origin main<CR>', { noremap = true})
 vim.api.nvim_set_keymap('n', '<leader>gth', ':Git push<CR>', { noremap = true})
