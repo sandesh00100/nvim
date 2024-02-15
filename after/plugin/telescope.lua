@@ -50,3 +50,5 @@ vim.keymap.set('n', '<leader>de', function () builtin.diagnostics({default_text=
 vim.keymap.set('n', '<leader>dw', function () builtin.diagnostics({default_text=":W:", initial_mode="normal"}) end)
 -- Diagnostics info
 vim.keymap.set('n', '<leader>di', function () builtin.diagnostics({default_text=":I:", initial_mode="normal"}) end)
+-- View keys
+vim.keymap.set('n', '<leader>vk', function () builtin.keymaps() end)
