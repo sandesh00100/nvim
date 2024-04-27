@@ -44,6 +44,8 @@ return require('packer').startup(function(use)
 	-- Debugging
 	use {'mfussenegger/nvim-dap'}
 	-- use {'rcarriga/cmp-dap'}
+	
+	use {'nvim-tree/nvim-web-devicons'}
 	use({
 		"neanias/everforest-nvim",
 		-- Optional; default configuration will be used if setup isn't called.
@@ -51,6 +53,12 @@ return require('packer').startup(function(use)
 			require("everforest").setup()
 		end,
 	})
+	use{"LunarVim/bigfile.nvim"}
+
+	use {'nvim-lualine/lualine.nvim', 
+		requres = {'nvim-tree/nvim-web-devicons', opt = true}
+	}
+
 	-- Auto pair characters like '{' or '"' etc
 	use {
 		"windwp/nvim-autopairs",
@@ -61,6 +69,10 @@ return require('packer').startup(function(use)
 		config = function()
 			require('Comment').setup()
 		end
+	}
+
+	use { 
+		'rcarriga/nvim-dap-ui', requires = {}
 	}
 	use { 
 		'lewis6991/gitsigns.nvim'
@@ -89,6 +101,10 @@ return require('packer').startup(function(use)
 		end
 	})
 	use ('nvim-tree/nvim-web-devicons')
+	-- Tree view for files
 	use({"nvim-tree/nvim-tree.lua"})
+	-- Rest client
+	use({"diepm/vim-rest-console"})
+	use({"LunarVim/bigfile.nvim"})
 end)
 
