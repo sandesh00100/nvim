@@ -72,7 +72,7 @@ return require('packer').startup(function(use)
 	}
 
 	use { 
-		'rcarriga/nvim-dap-ui', requires = {}
+		'rcarriga/nvim-dap-ui', requires = {'mfussenegger/nvim-dap'}
 	}
 	use { 
 		'lewis6991/gitsigns.nvim'

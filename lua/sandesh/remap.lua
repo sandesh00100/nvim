@@ -6,7 +6,7 @@ vim.keymap.set("n", "<leader>rp", vim.cmd.DapToggleRepl)
 vim.keymap.set('n', '<leader>fc', "<cmd>!cp '%:p' '%:p:h/%:t:r-copy.%:e'<CR>", opts)
 vim.api.nvim_create_autocmd('LspAttach', {
 	callback = function(args)
-		vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = args.buf })
+		vim.keymap.set('n', '<leader>K', vim.lsp.buf.hover, { buffer = args.buf })
 		vim.keymap.set('n', '<leader>rf',  function() 
 			local wordToRename = vim.fn.expand("<cword>")
 			vim.lsp.buf.rename(vim.fn.input({prompt='Rename "' .. wordToRename .. '" to: '})) 
@@ -26,6 +26,9 @@ vim.keymap.set("n", "}", "}zz")
 vim.keymap.set("n", "{", "{zz")
 vim.keymap.set("n", ")", ")zz")
 vim.keymap.set("n", "(", "(zz")
+
+vim.keymap.set("n", "<leader>qn", "<cmd>:cnext<CR>")
+vim.keymap.set("n", "<leader>qp", "<cmd>:cprev<CR>")
 
 -- vim rest conosole
 vim.keymap.set("n", "<leader>xr", ":call VrcQuery()<CR>")
