@@ -1,6 +1,6 @@
 vim.keymap.set("n", "<leader>gs", vim.cmd.Git)
 vim.keymap.set("n", "<leader>gtd", vim.cmd.Gdiffsplit)
-vim.keymap.set("n", "<leader>gtw", vim.cmd.Gwrite)
+vim.keymap.set("n", "<leader>gw", vim.cmd.Gwrite)
 
 -- Still need to figure out what this does
 vim.keymap.set("n", "<leader>gtr", vim.cmd.Gread)

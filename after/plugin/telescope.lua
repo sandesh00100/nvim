@@ -1,6 +1,13 @@
+function string:endswith(suffix)
+	-- # referes to the length of the suffix
+	return self:sub(-#suffix) == suffix
+end
+
 local builtin = require('telescope.builtin')
-vim.keymap.set('n', '<leader>pf', function () builtin.find_files({wrap_results=true}) end)
-vim.keymap.set('n', '<leader>pg', builtin.live_grep, {})
+vim.keymap.set('n', '<leader>pf', function ()
+	builtin.find_files({wrap_results=true})
+end)
+vim.keymap.set('n', '<leader>pg', builtin.live_grep)
 -- Git file search, where you only find files in your git repo
 vim.keymap.set('n', '<C-p>', builtin.git_files, {})
 -- Grep string, probably will be faster 
@@ -8,47 +15,117 @@ vim.keymap.set('n', '<leader>ps',function()
 	builtin.grep_string({search = vim.fn.input("Grep > ")})
 end)
 
--- Happns when it attaches to the lsp
-vim.api.nvim_create_autocmd('LspAttach', {
-	callback = function(args)
-		-- Details about something
-		vim.keymap.set('n', 'K', vim.lsp.buf.hover, { buffer = args.buf })
-		-- code actions
-		vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, {})
-		-- Refactor/rename 
-		vim.keymap.set('n', '<leader>rf', function ()
-			local previousName = vim.fn.expand("<cword>");
-			vim.lsp.buf.rename(vim.fn.input({prompt="Rename '" .. previousName .. "' to: " }))	
-		end)
-	end,
-})
+-- Get references
+vim.keymap.set('n', 'gr',function() 
+	builtin.lsp_references({preview=true})
+end)
 -- Get references
 vim.keymap.set('n', '<leader>gr', function () builtin.lsp_references({initial_mode="normal"}) end)
 -- Get implementations
-vim.keymap.set('n', '<leader>gi', function () builtin.lsp_implementation() end)
--- Hier incoming calls
-vim.keymap.set('n', '<leader>hi', function () builtin.lsp_incoming_calls({initial_mode="normal"}) end)
--- Hier outgoing calls
-vim.keymap.set('n', '<leader>ho', function () builtin.lsp_outgoing_calls({initial_mode="normal"}) end)
+vim.keymap.set('n', 'gi',function() 
+	builtin.lsp_implementations()
+end)
+
+-- Hierarchy incoming
+vim.keymap.set('n', '<leader>hi',function() 
+	builtin.lsp_incoming_calls({initial_mode="normal", show_line=true, wrap_results=true, truncate=3})
+end)
+
+-- Hierarchy outgoing
+vim.keymap.set('n', '<leader>ho',function() 
+	builtin.lsp_outgoing_calls({initial_mode="normal", show_line=true, wrap_results=true, truncate=3})
+end)
+
 -- Method tree
-vim.keymap.set('n', '<leader>mt', function () 
-	local currentFilePath = vim.fn.expand("%")
-	-- If it's a java file then make sure you use the method as the default text
-	if currentFilePath:sub(-#"java") == "java" then
-		builtin.treesitter({default_text=":method:"}) 
+vim.keymap.set('n', '<leader>mt',function() 
+	local fileName = vim.fn.expand("%")
+	if fileName:endswith(".java") or fileName:endswith(".class") then
+		builtin.treesitter({default_text=":method:"})
 	else 
-		builtin.treesitter({default_text=":function:"}) 
+		builtin.treesitter({default_text=":function:"})
 	end
 end)
+
 -- File tree
-vim.keymap.set('n', '<leader>ft', function () builtin.treesitter() end)
--- Diagnostics open
-vim.keymap.set('n', '<leader>do', function () builtin.diagnostics() end)
--- Diagnostics errors
-vim.keymap.set('n', '<leader>de', function () builtin.diagnostics({default_text=":E:", initial_mode="normal"}) end)
--- Diagnostics warn
-vim.keymap.set('n', '<leader>dw', function () builtin.diagnostics({default_text=":W:", initial_mode="normal"}) end)
--- Diagnostics info
-vim.keymap.set('n', '<leader>di', function () builtin.diagnostics({default_text=":I:", initial_mode="normal"}) end)
--- View keys
-vim.keymap.set('n', '<leader>vk', function () builtin.keymaps() end)
+vim.keymap.set('n', '<leader>ft',function() 
+	builtin.treesitter()
+end)
+
+-- Diagnostics Open
+vim.keymap.set('n', '<leader>do',function() 
+	builtin.diagnostics()
+end)
+-- Diagnostics Error
+vim.keymap.set('n', '<leader>de',function() 
+	builtin.diagnostics({default_text=":E:", initial_mode="normal", wrap_results=true, truncate=3})
+end)
+-- Diagnostics Warn
+vim.keymap.set('n', '<leader>dw',function() 
+	builtin.diagnostics({default_text=":W:", initial_mode="normal", wrap_results=true})
+end)
+-- Diagnostics Info
+vim.keymap.set('n', '<leader>di',function() 
+	builtin.diagnostics({default_text=":I:", initial_mode="normal", wrap_results=true})
+end)
+-- Diagnostics Info
+vim.keymap.set('n', '<leader>di',function() 
+	builtin.diagnostics({default_text=":I:", initial_mode="normal", wrap_results=true})
+end)
+
+-- Diagnostics Next
+vim.keymap.set('n', '<leader>dn',function() 
+	vim.diagnostic.goto_next();
+end)
+
+-- Diagnostics Previous
+vim.keymap.set('n', '<leader>dp',function() 
+	vim.diagnostic.goto_prev();
+end)
+--
+
+vim.keymap.set('n', '<leader>gb',function() 
+	builtin.git_branches();
+end, {desc="View Branches"})
+
+vim.keymap.set('n', '<leader>vk',function() 
+	builtin.keymaps();
+end, {desc="View Keymaps"})
+
+vim.keymap.set('n', '<leader>ht',function() 
+	builtin.help_tags();
+end, {desc="Help Tags"})
+
+-- vim.keymap.set('n', '<leader>fs', function() -- grep file contents in current nvim-tree node
+--   local success, node = pcall(function() return require('nvim-tree.lib').get_node_at_cursor() end)
+--   if not success or not node then return end;
+--   require('telescope.builtin').live_grep({search_dirs = {node.absolute_path}})
+-- end, {desc="Search current dir "})
+
+
+vim.keymap.set('n', '<leader>tf', function() -- grep file contents in current nvim-tree node
+  local success, node = pcall(function() return require('nvim-tree.lib').get_node_at_cursor() end)
+  if not success or not node then return end;
+  local absolute_path = node.absolute_path
+  local searchPath
+  if (node.has_children) then
+    searchPath = absolute_path
+  else
+    local lastSeparator = absolute_path:find("[^/]*$")
+    searchPath = absolute_path:sub(1, lastSeparator - 1)
+  end
+  require('telescope.builtin').find_files({search_dirs = {searchPath}})
+end,{
+  desc = "Telescope search on the directory in the nvim tree"
+})
+
+
+vim.keymap.set('n', '<leader>df', function() 
+  local dir = vim.fn.expand("%:p:h")
+  require('telescope.builtin').find_files({search_dirs = {dir}})
+end,{
+  desc = "Telescope search on directory of the current file"
+})
+
+vim.keymap.set('n', '<leader>cm', function ()
+  require('telescope.builtin').commands();
+end)

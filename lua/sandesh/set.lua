@@ -7,3 +7,4 @@ vim.o.background = "dark" -- or "light" for light mode
 vim.o.clipboard = "unnamed" -- or "light" for light mode
 vim.cmd([[colorscheme everforest]])
 vim.opt.guifont='Hack NFM'
+vim.o.tabstop = 2
