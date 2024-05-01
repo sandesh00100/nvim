@@ -129,3 +129,7 @@ end,{
 vim.keymap.set('n', '<leader>cm', function ()
   require('telescope.builtin').commands();
 end)
+
+vim.keymap.set('n', '<leader>sw', function ()
+  require('telescope.builtin').current_buffer_fuzzy_find();
+end)
