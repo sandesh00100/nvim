@@ -105,7 +105,6 @@ return require('packer').startup(function(use)
 	use({"nvim-tree/nvim-tree.lua"})
 	-- Rest client
 	use({"diepm/vim-rest-console"})
-	use({"LunarVim/bigfile.nvim"})
 
 	use({
 		"epwalsh/obsidian.nvim",
@@ -116,16 +115,8 @@ return require('packer').startup(function(use)
 
 			-- see below for full list of optional dependencies 👇
 		},
-		config = function()
-			require("obsidian").setup({
-				workspaces = {
-					{
-						name = "personal",
-						path = os.getenv("NOTES"),
-					},
-				},
-			})
-		end,
 	})
+	use({'xiyaowong/transparent.nvim'})
+  use({'bullets-vim/bullets.vim'})
 end)
 
