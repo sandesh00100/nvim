@@ -155,7 +155,7 @@ require("obsidian").setup(
 
   -- Optional, for templates (see below).
   templates = {
-    folder = "templates",
+    folder = "Templates",
     date_format = "%Y-%m-%d",
     time_format = "%H:%M",
     -- A map for custom variables, the key should be the variable and the value a function
@@ -229,7 +229,6 @@ require("obsidian").setup(
     ---@param workspace obsidian.Workspace
     post_set_workspace = function(client, workspace) end,
   },
-
   -- Optional, configure additional syntax highlighting / extmarks.
   -- This requires you have `conceallevel` set to 1 or 2. See `:help conceallevel` for more details.
   ui = {
@@ -240,6 +239,7 @@ require("obsidian").setup(
       -- NOTE: the 'char' value has to be a single character, and the highlight groups are defined below.
       [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
       ["x"] = { char = "", hl_group = "ObsidianDone" },
+      ["X"] = { char = "", hl_group = "ObsidianDone" },
       [">"] = { char = "", hl_group = "ObsidianRightArrow" },
       ["~"] = { char = "󰰱", hl_group = "ObsidianTilde" },
       -- Replace the above with this if you don't have a patched font:
