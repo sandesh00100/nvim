@@ -1,0 +1,19 @@
+set -o vi
+
+# Mac setup
+[ -f ~/.fzf.bash ] && source ~/.fzf.bash
+alias vim=nvim
+alias opti="ssh sandesh@192.168.18.190"
+export XDG_CONFIG_HOME=$HOME/.config
+export NOTES=$HOME/Documents/Dropbox/Notes
+export JAVA_HOME=/Library/Java/JavaVirtualMachines/temurin-17.jdk/Contents/Home
+export JDTLS_JVM_ARGS="-javaagent:/Users/sandeshshrestha/.local/share/nvim/mason/packages/jdtls/lombok.jar"
+# NVM
+export DISPLAY=:0.0
+export NVM_DIR="$HOME/.nvm"
+  [ -s "/opt/homebrew/opt/nvm/nvm.sh" ] && \. "/opt/homebrew/opt/nvm/nvm.sh"  # This loads nvm
+  [ -s "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm" ] && \. "/opt/homebrew/opt/nvm/etc/bash_completion.d/nvm"  # This loads nvm bash_completion
+export _ZO_DATA_DIR="$HOME/Library/Application Support"
+export OPENAI_API_KEY=""
+## Zoxide
+eval "$(zoxide init bash)"

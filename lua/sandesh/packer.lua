@@ -37,7 +37,7 @@ return require('packer').startup(function(use)
 			{'L3MON4D3/LuaSnip'},     -- Required
 		}
 	}
-	-- Gruv box theme
+-- Gruv box theme
 	use { "ellisonleao/gruvbox.nvim" }
 	-- Java lsp
 	use {'mfussenegger/nvim-jdtls'}

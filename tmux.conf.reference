@@ -1,4 +1,28 @@
+set-option -g escape-time 10
 set-window-option -g mode-keys vi
+set-option -g detach-on-destroy off
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+set -g default-terminal "tmux-256color"
+set -ga terminal-overrides ",*256col*:Tc"
+
+bind-key n new-session
+bind-key b switch-client -l
+# Bind <tmux prefix> + r to rename the current session for tmux
+bind r command-prompt -p "Rename session:" "rename-session '%%'"
+# List of plugins
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+set -g @plugin 'rose-pine/tmux'
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+
+
+set -g @rose_pine_variant 'main' # Options are 'main', 'moon' or 'dawn'
+
+run '~/.tmux/plugins/tpm/tpm'
+
 bind h select-pane -L
 bind j select-pane -D
 bind k select-pane -U
