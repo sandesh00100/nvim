@@ -1,4 +1,5 @@
-require("obsidian").setup(
+local obsidian = require("obsidian");
+obsidian.setup(
 {
   -- A list of workspace names, paths, and configuration overrides.
   -- If you use the Obsidian app, the 'path' of a workspace should generally be
@@ -47,12 +48,12 @@ require("obsidian").setup(
   -- way then set 'mappings = {}'.
   mappings = {
     -- Overrides the 'gf' mapping to work on markdown/wiki links within your vault.
-    ["gf"] = {
-      action = function()
-        return require("obsidian").util.gf_passthrough()
-      end,
-      opts = { noremap = false, expr = true, buffer = true },
-    },
+    -- ["gf"] = {
+    --   action = function()
+    --     return require("obsidian").util.gf_passthrough()
+    --   end,
+    --   opts = { noremap = false, expr = true, buffer = true },
+    -- },
     -- Toggle check-boxes.
     ["<leader>oc"] = {
       action = function()
@@ -292,3 +293,21 @@ require("obsidian").setup(
 }
 )
 
+vim.keymap.set('n', 'gf', function ()
+  -- coded
+  -- Get the current line number
+  local current_line = vim.api.nvim_win_get_cursor(0)[1]
+  local line_content = vim.api.nvim_buf_get_lines(0, current_line - 1, current_line, false)[1]
+  print(line_content)
+-- define the function to find the position of a character in a string
+  local position = string.find(line_content, '%[%[');
+  if position then
+      vim.api.nvim_win_set_cursor(0, {current_line, position - 1})
+      vim.cmd.ObsidianFollowLink()
+  end
+end)
+
+vim.keymap.set('n','<leader>ob', vim.cmd.ObsidianOpen)
+vim.keymap.set('n','<leader>bl', vim.cmd.ObsidianBacklinks)
+vim.keymap.set('n','<leader>ol', vim.cmd.ObsidianLinks)
+vim.keymap.set('n','<leader>ot', vim.cmd.ObsidianTags)
