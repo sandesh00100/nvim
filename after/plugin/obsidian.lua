@@ -307,11 +307,12 @@ vim.keymap.set('n', 'gf', function ()
   end
 end)
 
-vim.keymap.set('n','<leader>ob', vim.cmd.ObsidianOpen)
-vim.keymap.set('n','<leader>bl', vim.cmd.ObsidianBacklinks)
-vim.keymap.set('n','<leader>ol', vim.cmd.ObsidianLinks)
-vim.keymap.set('n','<leader>ot', vim.cmd.ObsidianTags)
-vim.keymap.set('n','<leader>ti', vim.cmd.ObsidianTemplate)
+vim.keymap.set('n','<leader>ob', vim.cmd.ObsidianOpen, {desc="Open file in Obsidian"})
+vim.keymap.set('n','<leader>bl', vim.cmd.ObsidianBacklinks, {desc="Show backlinks in Obsidian"})
+vim.keymap.set('n','<leader>ol', vim.cmd.ObsidianLinks, {desc="Show links in Obsidian"})
+vim.keymap.set('n','<leader>ot', vim.cmd.ObsidianTags, {desc="Show tags in Obsidian"})
+vim.keymap.set('n','<leader>ti', vim.cmd.ObsidianTemplate, {desc="Insert template in Obsidian"})
+
 vim.keymap.set('n', '<leader>dt', function ()
   local currentDate = os.date("%Y-%m-%d")
   local filePath = "Daily Notes/" .. currentDate .. ".md"
@@ -324,13 +325,8 @@ vim.keymap.set('n', '<leader>dt', function ()
   end
 end)
 
--- FIXME: needs to be 
-vim.keymap.set('n', '<leader>nn', function ()
-  -- Get next file in the directory that the current file youre into 
-  local curDir = vim.fn.expand("%p")
-  -- print(curDir)
-  if string.find(curDir, "Daily Notes") then
-    local curFile = vim.fn.expand("%")
+vim.keymap.set('n', '<leader>mf', function ()
+  local fileName = vim.fn.input({prompt='Add Markdown File: '}) 
+  vim.api.nvim_command("edit ".. fileName .. ".md")
+end, {desc = "Create a new markdown file"})
 
-  end
-end)
