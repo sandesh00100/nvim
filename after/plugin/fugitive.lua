@@ -7,7 +7,9 @@ vim.keymap.set("n", "<leader>gtr", vim.cmd.Gread)
 
 vim.api.nvim_set_keymap('n', '<leader>gl', ':Git log<CR>', { noremap = true, desc="View Git logs"})
 vim.api.nvim_set_keymap('n', '<leader>gb', ':Git blame<CR>', { noremap = true, desc="Git blame"})
-vim.api.nvim_set_keymap('n', '<leader>gc', ':Git commit<CR>', { noremap = true, desc="Git Commit files"})
+vim.keymap.set('n', '<leader>gc', function ()
+  os.execute("sh ~/.config/nvim/scripts/commit.sh") -- execute shell script
+end)
 vim.api.nvim_set_keymap('n', '<leader>gl', ':Git log<CR>', { noremap = true, desc="View Git logs"})
 
 vim.api.nvim_set_keymap('n', '<leader>gp', ':Git pull --rebase origin main<CR>', { noremap = true, desc="Git pull with rebase"})

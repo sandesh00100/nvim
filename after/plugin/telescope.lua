@@ -133,3 +133,7 @@ end)
 vim.keymap.set('n', '<leader>sw', function ()
   require('telescope.builtin').current_buffer_fuzzy_find();
 end)
+
+vim.keymap.set('n', '<leader>sp', function ()
+  require('telescope.builtin').spell_suggest();
+end)
