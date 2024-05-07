@@ -137,3 +137,7 @@ end)
 vim.keymap.set('n', '<leader>sp', function ()
   require('telescope.builtin').spell_suggest();
 end)
+
+vim.keymap.set('n', '<leader>ts', function ()
+  require('telescope.builtin').git_status();
+end, {desc="Telescope git status"})
