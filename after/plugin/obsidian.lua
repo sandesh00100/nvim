@@ -312,3 +312,25 @@ vim.keymap.set('n','<leader>bl', vim.cmd.ObsidianBacklinks)
 vim.keymap.set('n','<leader>ol', vim.cmd.ObsidianLinks)
 vim.keymap.set('n','<leader>ot', vim.cmd.ObsidianTags)
 vim.keymap.set('n','<leader>ti', vim.cmd.ObsidianTemplate)
+vim.keymap.set('n', '<leader>dt', function ()
+  local currentDate = os.date("%Y-%m-%d")
+  local filePath = "Daily Notes/" .. currentDate .. ".md"
+  local file = io.open(filePath, "r")
+  if file then
+    io.close(file)
+    vim.api.nvim_command("edit " .. filePath)
+  else
+    vim.cmd.ObsidianOpen()
+  end
+end)
+
+-- FIXME: needs to be 
+vim.keymap.set('n', '<leader>nn', function ()
+  -- Get next file in the directory that the current file youre into 
+  local curDir = vim.fn.expand("%p")
+  -- print(curDir)
+  if string.find(curDir, "Daily Notes") then
+    local curFile = vim.fn.expand("%")
+
+  end
+end)
