@@ -5,13 +5,11 @@ vim.keymap.set("n", "<leader>gw", vim.cmd.Gwrite)
 -- Still need to figure out what this does
 vim.keymap.set("n", "<leader>gtr", vim.cmd.Gread)
 
-vim.api.nvim_set_keymap('n', '<leader>gl', ':Git log<CR>', { noremap = true, desc="View Git logs"})
 vim.api.nvim_set_keymap('n', '<leader>gb', ':Git blame<CR>', { noremap = true, desc="Git blame"})
 -- Commit.sh should be in your binaries 
 vim.keymap.set('n', '<leader>gc', function ()
   vim.cmd("!commit.sh")
 end)
-vim.api.nvim_set_keymap('n', '<leader>gl', ':Git log<CR>', { noremap = true, desc="View Git logs"})
 
 vim.api.nvim_set_keymap('n', '<leader>gp', ':Git pull --rebase origin main<CR>', { noremap = true, desc="Git pull with rebase"})
 vim.api.nvim_set_keymap('n', '<leader>gh', ':Git push<CR>', { noremap = true, desc="Git push"})

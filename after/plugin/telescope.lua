@@ -141,3 +141,7 @@ end)
 vim.keymap.set('n', '<leader>ts', function ()
   require('telescope.builtin').git_status();
 end, {desc="Telescope git status"})
+
+vim.api.set('n', '<leader>gl', function ()
+  require('telescope.builtin').git_logs();
+end, { noremap = true, desc="View Git logs"})
