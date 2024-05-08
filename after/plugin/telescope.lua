@@ -142,6 +142,10 @@ vim.keymap.set('n', '<leader>ts', function ()
   require('telescope.builtin').git_status();
 end, {desc="Telescope git status"})
 
-vim.api.set('n', '<leader>gl', function ()
-  require('telescope.builtin').git_logs();
+vim.keymap.set('n', '<leader>gl', function ()
+  require('telescope.builtin').git_commits();
 end, { noremap = true, desc="View Git logs"})
+
+vim.keymap.set('n', '<leader>gfl', function ()
+  require('telescope.builtin').git_bcommits();
+end, { noremap = true, desc="View Git file logs"})
