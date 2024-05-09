@@ -8,6 +8,10 @@ bind l select-pane -R
 set -g default-terminal "tmux-256color"
 set -ga terminal-overrides ",*256col*:Tc"
 
+## Session x 
+set -g @sessionx-bind 'o'
+set -g @sessionx-zoxide-mode 'on'
+
 bind-key n new-session
 bind-key b switch-client -l
 # Bind <tmux prefix> + r to rename the current session for tmux
@@ -18,12 +22,8 @@ set -g @plugin 'tmux-plugins/tmux-sensible'
 set -g @plugin 'rose-pine/tmux'
 set -g @plugin 'tmux-plugins/tmux-resurrect'
 
-
+set -g @plugin 'omerxx/tmux-sessionx'
 set -g @rose_pine_variant 'main' # Options are 'main', 'moon' or 'dawn'
 
 run '~/.tmux/plugins/tpm/tpm'
 
-bind h select-pane -L
-bind j select-pane -D
-bind k select-pane -U
-bind l select-pane -R
