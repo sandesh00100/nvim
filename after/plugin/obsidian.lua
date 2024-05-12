@@ -240,9 +240,6 @@ obsidian.setup(
       -- NOTE: the 'char' value has to be a single character, and the highlight groups are defined below.
       [" "] = { char = "󰄱", hl_group = "ObsidianTodo" },
       ["x"] = { char = "", hl_group = "ObsidianDone" },
-      ["X"] = { char = "", hl_group = "ObsidianDone" },
-      [">"] = { char = "", hl_group = "ObsidianRightArrow" },
-      ["~"] = { char = "󰰱", hl_group = "ObsidianTilde" },
       -- Replace the above with this if you don't have a patched font:
       -- [" "] = { char = "☐", hl_group = "ObsidianTodo" },
       -- ["x"] = { char = "✔", hl_group = "ObsidianDone" },
@@ -325,8 +322,20 @@ vim.keymap.set('n', '<leader>dt', function ()
   end
 end)
 
+vim.keymap.set('n', '<leader>nn', function ()
+  local currentFile = vim.fn.expand("%:p") 
+
+  local handle = io.popen("ls 'Daily Notes' | sort")
+  local result = handle:read("*a")
+  handle:close()
+  print(result)
+end)
+
+
 vim.keymap.set('n', '<leader>mf', function ()
   local fileName = vim.fn.input({prompt='Add Markdown File: '}) 
   vim.api.nvim_command("edit ".. fileName .. ".md")
 end, {desc = "Create a new markdown file"})
 
+-- Checkbox
+vim.keymap.set("n", "<leader>ch", vim.cmd.ObsidianToggleCheckbox)

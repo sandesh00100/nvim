@@ -32,8 +32,6 @@ vim.keymap.set("n", "<S-h>", "<cmd>:cprev<CR>")
 
 -- vim rest conosole
 vim.keymap.set("n", "<leader>xr", ":call VrcQuery()<CR>")
--- Checkbox
-vim.keymap.set("n", "<leader>ch", "<cmd>:ToggleCheckbox<CR>")
 -- Execute current shell script
 vim.keymap.set("n", "<leader>xs", ":!%:p<CR>")
 vim.keymap.set("n", "<leader>qs",function ()
