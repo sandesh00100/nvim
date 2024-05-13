@@ -327,13 +327,15 @@ vim.keymap.set('n', '<leader>dt', function ()
   end
 end)
 
+
 vim.keymap.set('n', '<leader>nn', function ()
   local currentFile = vim.fn.expand("%:p") 
 
-  local handle = io.popen("ls 'Daily Notes' | sort")
+  -- local handle = io.popen("ls 'Daily Notes' | sort")
+  local handle = io.popen("ls 'Daily Notes'")
   local result = handle:read("*a")
   handle:close()
-  print(result)
+  -- Need to split the result because it's a string
 end)
 
 
