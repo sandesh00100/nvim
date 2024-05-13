@@ -13,3 +13,6 @@ end)
 
 vim.api.nvim_set_keymap('n', '<leader>gp', ':Git pull --rebase origin main<CR>', { noremap = true, desc="Git pull with rebase"})
 vim.api.nvim_set_keymap('n', '<leader>gh', ':Git push<CR>', { noremap = true, desc="Git push"})
+vim.api.nvim_set_keymap('n', '<leader>gh', ':Git push<CR>', { noremap = true, desc="Git push"})
+vim.api.nvim_set_keymap('n', '<leader>dp', ':diffput<CR>', { noremap = true, desc="Put current side's changes"})
+vim.api.nvim_set_keymap('n', '<leader>dg', ':diffget<CR>', { noremap = true, desc="Get the other side's changes"})

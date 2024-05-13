@@ -160,7 +160,11 @@ obsidian.setup(
     date_format = "%Y-%m-%d",
     time_format = "%H:%M",
     -- A map for custom variables, the key should be the variable and the value a function
-    substitutions = {},
+    substitutions = {
+      Title = function ()
+        return vim.fn.expand("%:r")
+      end
+    },
   },
 
   -- Optional, by default when you use `:ObsidianFollowLink` on a link to an external
@@ -308,6 +312,7 @@ vim.keymap.set('n','<leader>ob', vim.cmd.ObsidianOpen, {desc="Open file in Obsid
 vim.keymap.set('n','<leader>bl', vim.cmd.ObsidianBacklinks, {desc="Show backlinks in Obsidian"})
 vim.keymap.set('n','<leader>ol', vim.cmd.ObsidianLinks, {desc="Show links in Obsidian"})
 vim.keymap.set('n','<leader>ot', vim.cmd.ObsidianTags, {desc="Show tags in Obsidian"})
+vim.keymap.set('n','<leader>or', vim.cmd.ObsidianRename, {desc="Rename obsidian file"})
 vim.keymap.set('n','<leader>ti', vim.cmd.ObsidianTemplate, {desc="Insert template in Obsidian"})
 
 vim.keymap.set('n', '<leader>dt', function ()
@@ -339,3 +344,5 @@ end, {desc = "Create a new markdown file"})
 
 -- Checkbox
 vim.keymap.set("n", "<leader>ch", vim.cmd.ObsidianToggleCheckbox)
+
+
