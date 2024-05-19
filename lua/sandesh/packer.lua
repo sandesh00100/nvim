@@ -140,5 +140,6 @@ return require('packer').startup(function(use)
     -- https://github.com/hrsh7th/cmp-cmdline
     'hrsh7th/cmp-cmdline',
   }})
+
 end)
 

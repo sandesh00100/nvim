@@ -34,6 +34,7 @@ vim.keymap.set("n", "<S-h>", "<cmd>:cprev<CR>")
 vim.keymap.set("n", "<leader>xr", ":call VrcQuery()<CR>")
 -- Execute current shell script
 vim.keymap.set("n", "<leader>xs", ":!%:p<CR>")
+
 vim.keymap.set("n", "<leader>qs",function ()
   local quickfix_list = vim.fn.getqflist()
     table.sort(quickfix_list, function(a, b)
@@ -41,3 +42,71 @@ vim.keymap.set("n", "<leader>qs",function ()
     end)
     vim.fn.setqflist(quickfix_list)
 end)
+
+-- bufnr	number of buffer that has the file name, use
+-- 				bufname() to get the name
+-- 			module	module name
+-- 			lnum	line number in the buffer (first line is 1)
+-- 			end_lnum
+-- 				end of line number if the item is multiline
+-- 			col	column number (first column is 1)
+-- 			end_col	end of column number if the item has range
+-- 			vcol	TRUE: "col" is visual column
+-- 				FALSE: "col" is byte index
+-- 			nr	error number
+-- 			pattern	search pattern used to locate the error
+-- 			text	description of the error
+-- 			type	type of the error, 'E', '1', etc.
+-- 			valid	TRUE: recognized error message
+-- 			user_data
+-- 				custom data associated with the item, can be
+-- 				any type.
+
+vim.keymap.set("n", "<leader>qa",function ()
+  local quickfix_list = vim.fn.getqflist()
+  local cfilename = vim.fn.expand('%:p')
+  local cursorrow = vim.api.nvim_win_get_cursor(0)[1]
+  local cursorcol = vim.api.nvim_win_get_cursor(0)[2] + 1
+  local bufnr = vim.api.nvim_get_current_buf()
+  local newitem = {filename =  cfilename, lnum = cursorrow, col = cursorcol, text = cfilename, bufnr = bufnr }
+
+  for k, v in pairs(quickfix_list) do
+    -- Make sure we don't add duplicate elements on qf list 
+    if v.col == cursorcol and v.lnum == cursorrow and v.bufnr == bufnr then
+      return
+    end
+  end
+  table.insert(quickfix_list, newitem)
+
+  vim.fn.setqflist(quickfix_list)
+end)
+
+vim.keymap.set("n", "<leader>qd",function ()
+  local quickfix_list = vim.fn.getqflist()
+  local newQuickFxList = {}
+  local cursorrow = vim.api.nvim_win_get_cursor(0)[1]
+  local cursorcol = vim.api.nvim_win_get_cursor(0)[2] + 1
+  local bufnr = vim.api.nvim_get_current_buf()
+  for k, v in pairs(quickfix_list) do
+    -- Make sure we don't add duplicate elements on qf list 
+    if not (v.col == cursorcol and v.lnum == cursorrow and v.bufnr == bufnr) then
+      table.insert(newQuickFxList, v)
+    end
+  end
+
+  vim.fn.setqflist(newQuickFxList)
+end)
+
+  -- local quickfix_list = vim.fn.getqflist()
+  -- local new_qf_list = {}
+  --
+  -- for k, v in pairs(quickfix_list) do
+  --   local lineNbr;
+  --   local colNbr;
+  --   local fileName;
+  -- end
+  -- print(quickfix_list[1])
+  -- local cFileName = vim.fn.expand('%:p')
+  -- local newItem = {filename =  cFileName, lnum = 1, col = 1, text = filename}
+  -- table.insert(quickfix_list, newItem)
+  -- vim.fn.setqflist(quickfix_list)

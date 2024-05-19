@@ -330,12 +330,19 @@ end)
 
 vim.keymap.set('n', '<leader>nn', function ()
   local currentFile = vim.fn.expand("%:p") 
+	local fileName = vim.fn.expand("%")
 
-  -- local handle = io.popen("ls 'Daily Notes' | sort")
-  local handle = io.popen("ls 'Daily Notes'")
+  -- Might be able to do something more efficient
+  local handle = io.popen("ls 'Daily Notes' | sort")
   local result = handle:read("*a")
   handle:close()
-  -- Need to split the result because it's a string
+
+  local previousFile = fileName;
+  for currentFile in result:gmatch("[^\n]+") do
+    previousFile = currentFile;
+  end
+  print(result)
+  -- Split's the string 
 end)
 
 
