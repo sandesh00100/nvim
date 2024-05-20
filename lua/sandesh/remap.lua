@@ -97,6 +97,23 @@ vim.keymap.set("n", "<leader>qd",function ()
   vim.fn.setqflist(newQuickFxList)
 end)
 
+vim.keymap.set("n", "<leader>qf",function ()
+  local quickfix_list = vim.fn.getqflist()
+  local bufnr = vim.api.nvim_get_current_buf()
+  local index = 1;
+  local targetIndex;
+  for k, v in pairs(quickfix_list) do
+    if v.bufnr == bufnr then
+      targetIndex = index
+    end
+    index = index + 1
+  end
+
+  if targetIndex then
+    vim.cmd("cc " .. targetIndex)
+  end
+end)
+
   -- local quickfix_list = vim.fn.getqflist()
   -- local new_qf_list = {}
   --
