@@ -321,28 +321,37 @@ vim.keymap.set('n', '<leader>dt', function ()
   local file = io.open(noteToday, "r")
   if file then
     io.close(file)
+    -- Open todays note
     vim.api.nvim_command("edit " .. noteToday)
     local handle = io.popen("ls 'Daily Notes' *.md | sort")
     local result = handle:read("*a")
     handle:close()
 
+    -- Calculate time/dates before +/- 7 days from current
     local currentTime = os.time()  
     local timeMinus7Days = currentTime - (7 * 24 * 60 * 60)  -- Subtract 7 days (7 * 24 hours * 60 minutes * 60 seconds)
     local timePlus7Days = currentTime + (7 * 24 * 60 * 60)  -- Subtract 7 days (7 * 24 hours * 60 minutes * 60 seconds)
     local dateMinus7Days = os.date("%Y-%m-%d", timeMinus7Days)
     local datePlus7Days = os.date("%Y-%m-%d", timePlus7Days)
+
     local qfList = {}
     local index = 1
     local indexToday = nil
 
+    -- Loop through all of the lines
     for currentFile in result:gmatch("[^\n]+") do
       local fullFile = "Daily Notes/" .. currentFile
       if fullFile == noteToday then
+        -- set the index of todays day
         indexToday = index
-        print(fullFile .. "=" .. noteToday .. " index=" .. indexToday)
       end
       if currentFile >= dateMinus7Days and currentFile <= datePlus7Days then
-        local newitem = {filename =  fullFile, text = fullFile}
+        local date = currentFile:match("(.+)%.")
+        local year, month, day = date:match("(%d+)-(%d+)-(%d+)")
+        local timestamp = os.time{year=year, month=month, day=day}
+        local day_of_week = os.date("%A", timestamp)
+        -- Add items in the date range in the quickfix list
+        local newitem = {filename =  fullFile, text = day_of_week, lnum=15}
         table.insert(qfList, newitem);
         index = index + 1
       end
