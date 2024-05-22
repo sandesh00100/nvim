@@ -317,32 +317,41 @@ vim.keymap.set('n','<leader>ti', vim.cmd.ObsidianTemplate, {desc="Insert templat
 
 vim.keymap.set('n', '<leader>dt', function ()
   local currentDate = os.date("%Y-%m-%d")
-  local filePath = "Daily Notes/" .. currentDate .. ".md"
-  local file = io.open(filePath, "r")
+  local noteToday = "Daily Notes/" .. currentDate .. ".md"
+  local file = io.open(noteToday, "r")
   if file then
     io.close(file)
-    vim.api.nvim_command("edit " .. filePath)
+    vim.api.nvim_command("edit " .. noteToday)
+    local handle = io.popen("ls 'Daily Notes' *.md | sort")
+    local result = handle:read("*a")
+    handle:close()
+
+    local currentTime = os.time()  
+    local timeMinus7Days = currentTime - (7 * 24 * 60 * 60)  -- Subtract 7 days (7 * 24 hours * 60 minutes * 60 seconds)
+    local timePlus7Days = currentTime + (7 * 24 * 60 * 60)  -- Subtract 7 days (7 * 24 hours * 60 minutes * 60 seconds)
+    local dateMinus7Days = os.date("%Y-%m-%d", timeMinus7Days)
+    local datePlus7Days = os.date("%Y-%m-%d", timePlus7Days)
+    local qfList = {}
+    local index = 1
+    local indexToday = nil
+
+    for currentFile in result:gmatch("[^\n]+") do
+      local fullFile = "Daily Notes/" .. currentFile
+      if fullFile == noteToday then
+        indexToday = index
+        print(fullFile .. "=" .. noteToday .. " index=" .. indexToday)
+      end
+      if currentFile >= dateMinus7Days and currentFile <= datePlus7Days then
+        local newitem = {filename =  fullFile, text = fullFile}
+        table.insert(qfList, newitem);
+        index = index + 1
+      end
+    end
+    vim.fn.setqflist(qfList)
+    vim.cmd("cc " .. indexToday)
   else
     vim.cmd.ObsidianOpen()
   end
-end)
-
-
-vim.keymap.set('n', '<leader>nn', function ()
-  local currentFile = vim.fn.expand("%:p") 
-	local fileName = vim.fn.expand("%")
-
-  -- Might be able to do something more efficient
-  local handle = io.popen("ls 'Daily Notes' | sort")
-  local result = handle:read("*a")
-  handle:close()
-
-  local previousFile = fileName;
-  for currentFile in result:gmatch("[^\n]+") do
-    previousFile = currentFile;
-  end
-  print(result)
-  -- Split's the string 
 end)
 
 
