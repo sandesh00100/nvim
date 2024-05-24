@@ -294,21 +294,30 @@ obsidian.setup(
 }
 )
 
-vim.keymap.set('n', 'gf', function ()
+-- FIXME: This will only take you to the first position of the link, might want to fix this to find the closest link to the cursor
+local findLink = function ()
   -- coded
   -- Get the current line number
-  local current_line = vim.api.nvim_win_get_cursor(0)[1]
-  local line_content = vim.api.nvim_buf_get_lines(0, current_line - 1, current_line, false)[1]
-  print(line_content)
+  local currentLine = vim.api.nvim_win_get_cursor(0)[1]
+  local lineContent = vim.api.nvim_buf_get_lines(0, currentLine - 1, currentLine, false)[1]
 -- define the function to find the position of a character in a string
-  local position = string.find(line_content, '%[%[');
-  if position then
-      vim.api.nvim_win_set_cursor(0, {current_line, position - 1})
+  local columnNumber = string.find(lineContent, '%[%[');
+  vim.api.nvim_win_set_cursor(0, {currentLine, columnNumber - 1})
+  return columnNumber
+end
+
+vim.keymap.set('n', 'gf', function ()
+  if findLink() then
       vim.cmd.ObsidianFollowLink()
   end
 end)
 
-vim.keymap.set('n','<leader>ob', vim.cmd.ObsidianOpen, {desc="Open file in Obsidian"})
+vim.keymap.set('n','<leader>ob', function ()
+  if findLink() then
+    vim.cmd.ObsidianOpen()
+ end 
+end, {desc="Open file in Obsidian"})
+
 vim.keymap.set('n','<leader>bl', vim.cmd.ObsidianBacklinks, {desc="Show backlinks in Obsidian"})
 vim.keymap.set('n','<leader>ol', vim.cmd.ObsidianLinks, {desc="Show links in Obsidian"})
 vim.keymap.set('n','<leader>ot', vim.cmd.ObsidianTags, {desc="Show tags in Obsidian"})
