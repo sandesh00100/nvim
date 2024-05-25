@@ -293,29 +293,31 @@ obsidian.setup(
   },
 }
 )
-
+-- [[ link ]] [[ link ]] [[ link ]]
 -- FIXME: This will only take you to the first position of the link, might want to fix this to find the closest link to the cursor
-local findLink = function ()
+local setCursorToNearestLink = function ()
   -- coded
   -- Get the current line number
   local currentLine = vim.api.nvim_win_get_cursor(0)[1]
   local lineContent = vim.api.nvim_buf_get_lines(0, currentLine - 1, currentLine, false)[1]
 -- define the function to find the position of a character in a string
-  local columnNumber = string.find(lineContent, '%[%[');
-  vim.api.nvim_win_set_cursor(0, {currentLine, columnNumber - 1})
+  local columnnumber = string.find(linecontent, '%[%[');
+  if columnNumber then
+    vim.api.nvim_win_set_cursor(0, {currentLine, columnNumber - 1})
+  end
+
   return columnNumber
 end
 
 vim.keymap.set('n', 'gf', function ()
-  if findLink() then
+  if setCursorToNearestLink() then
       vim.cmd.ObsidianFollowLink()
   end
 end)
 
 vim.keymap.set('n','<leader>ob', function ()
-  if findLink() then
-    vim.cmd.ObsidianOpen()
- end 
+  setCursorToNearestLink()
+  vim.cmd.ObsidianOpen()
 end, {desc="Open file in Obsidian"})
 
 vim.keymap.set('n','<leader>bl', vim.cmd.ObsidianBacklinks, {desc="Show backlinks in Obsidian"})

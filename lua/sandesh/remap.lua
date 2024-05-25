@@ -81,6 +81,7 @@ vim.keymap.set("n", "<leader>qa",function ()
   vim.fn.setqflist(quickfix_list)
 end)
 
+-- [[ text ]]  [[ text ]] [[ text ]]
 vim.keymap.set("n", "<leader>qd",function ()
   local quickfix_list = vim.fn.getqflist()
   local newQuickFxList = {}
