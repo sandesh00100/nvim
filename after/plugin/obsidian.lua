@@ -291,23 +291,39 @@ obsidian.setup(
       return string.format("![%s](%s)", path.name, path)
     end,
   },
-}
-)
--- [[ link ]] [[ link ]] [[ link ]]
--- FIXME: This will only take you to the first position of the link, might want to fix this to find the closest link to the cursor
+})
+
+
+-- There is a faster way to do this but it'd be stupid to add that complexity
 local setCursorToNearestLink = function ()
   -- coded
   -- Get the current line number
   local currentLine = vim.api.nvim_win_get_cursor(0)[1]
+  local cursorcol = vim.api.nvim_win_get_cursor(0)[2] + 1
   local lineContent = vim.api.nvim_buf_get_lines(0, currentLine - 1, currentLine, false)[1]
--- define the function to find the position of a character in a string
-  local columnnumber = string.find(linecontent, '%[%[');
-  if columnNumber then
-    vim.api.nvim_win_set_cursor(0, {currentLine, columnNumber - 1})
-  end
 
-  return columnNumber
+  local tbl = {string.byte(lineContent, 1, #lineContent)}
+  local minIndex = 1
+  local minDistance = math.maxinteger
+  -- Loop through the table
+  for i = 1, #tbl-1 do
+    local startIndex = string.char(tbl[i])
+    local nextIndex = string.char(tbl[i+1])
+    -- check if we're on a start link or end link
+    local startMatches = startIndex == "[" and nextIndex == "["
+    local endMatches = startIndex == "]" and nextIndex == "]"
+    -- Calculate current distance
+    local currentDistance = math.abs(cursorcol-i)
+    -- If current distance is lower set that 
+    if (startMatches or endMatches) and (currentDistance < minDistance) then
+      minDistance = currentDistance
+      minIndex = i
+    end
+  end
+  vim.api.nvim_win_set_cursor(0, {currentLine, minIndex - 1})
+  return minIndex
 end
+
 
 vim.keymap.set('n', 'gf', function ()
   if setCursorToNearestLink() then
