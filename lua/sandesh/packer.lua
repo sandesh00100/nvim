@@ -11,7 +11,7 @@ return require('packer').startup(function(use)
 		-- or                            , branch = '0.1.x',
 		requires = { {'nvim-lua/plenary.nvim'} }
 	}
-	use ({'nvim-treesitter/nvim-treesitter', {run = ':TSUpdate'}})
+	use ({'nvim-treesitter/nvim-treesitter', build = ':TSUpdate'})
 	-- Abstract syntax tree
 	use('nvim-treesitter/playground')
 	-- Good for file nav, switching back and forth for files
