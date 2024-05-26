@@ -56,7 +56,7 @@ return require('packer').startup(function(use)
 	use{"LunarVim/bigfile.nvim"}
 
 	use {'nvim-lualine/lualine.nvim', 
-		requres = {'nvim-tree/nvim-web-devicons', opt = true}
+		requires = {'nvim-tree/nvim-web-devicons', opt = true}
 	}
 
 	-- Auto pair characters like '{' or '"' etc
@@ -140,6 +140,11 @@ return require('packer').startup(function(use)
     -- https://github.com/hrsh7th/cmp-cmdline
     'hrsh7th/cmp-cmdline',
   }})
-
+  use({"m4xshen/hardtime.nvim", 
+  require={
+    "MunifTanjim/nui.nvim",
+    "nvim-lua/plenary.nvim"
+  }
+})
 end)
 

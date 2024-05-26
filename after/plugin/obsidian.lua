@@ -304,7 +304,8 @@ local setCursorToNearestLink = function ()
 
   local tbl = {string.byte(lineContent, 1, #lineContent)}
   local minIndex = 1
-  local minDistance = math.maxinteger
+  -- Some large number
+  local minDistance = 999999
   -- Loop through the table
   for i = 1, #tbl-1 do
     local startIndex = string.char(tbl[i])
@@ -314,6 +315,7 @@ local setCursorToNearestLink = function ()
     local endMatches = startIndex == "]" and nextIndex == "]"
     -- Calculate current distance
     local currentDistance = math.abs(cursorcol-i)
+    print(currentDistance, minDistance)
     -- If current distance is lower set that 
     if (startMatches or endMatches) and (currentDistance < minDistance) then
       minDistance = currentDistance
