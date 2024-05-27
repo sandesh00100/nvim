@@ -5,21 +5,5 @@ vim.g.loaded_netrwPlugin = 1
 -- optionally enable 24-bit colour
 vim.opt.termguicolors = true
 
--- OR setup with some options
-require("nvim-tree").setup({
-  sort = {
-    sorter = "case_sensitive",
-  },
-  view = {
-    width = 40,
-  },
-  renderer = {
-    group_empty = true,
-  },
-  filters = {
-    dotfiles = true,
-  },
-})
-
 vim.keymap.set("n", "<leader>nf", vim.cmd.NvimTreeFindFile)
 vim.keymap.set("n", "<leader>nt", vim.cmd.NvimTreeToggle)
