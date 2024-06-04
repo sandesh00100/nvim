@@ -14,5 +14,6 @@ vim.o.tabstop = 2
 vim.o.shiftwidth = 2
 vim.o.cursorline = true
 vim.opt.conceallevel = 0
+vim.opt.showmode = false
 vim.cmd("hi Search guibg=peru")
 
