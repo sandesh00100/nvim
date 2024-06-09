@@ -4,7 +4,7 @@ return {
     highlights = {
       {
         filter = {filetype = 'markdown'},
-        pattern = "(QUESTION)",
+        pattern = ".*QUESTION.*",
         hl = "Constant"
       }
     }
