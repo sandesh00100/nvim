@@ -12,5 +12,13 @@ return {
 			{'hrsh7th/nvim-cmp'},     -- Required
 			{'hrsh7th/cmp-nvim-lsp'}, -- Required
 			{'L3MON4D3/LuaSnip'},     -- Required
-		}
+		},
+    config = function ()
+      local lsp = require('lsp-zero')
+
+      lsp.preset('recommended')
+      lsp.skip_server_setup({'jdtls'})
+      lsp.setup()
+
+    end
 	}
