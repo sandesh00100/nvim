@@ -19,7 +19,6 @@ local setCursorToNearestLink = function ()
     local endMatches = startIndex == "]" and nextIndex == "]"
     -- Calculate current distance
     local currentDistance = math.abs(cursorcol-i)
-    print(currentDistance, minDistance)
     -- If current distance is lower set that 
     if (startMatches or endMatches) and (currentDistance < minDistance) then
       minDistance = currentDistance
