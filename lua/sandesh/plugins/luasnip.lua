@@ -15,18 +15,15 @@ return {
     local d = ls.dynamic_node
     local t = ls.t
     local c = ls.c
-
     vim.keymap.set({"i"}, "<C-K>", function() ls.expand() end, {silent = true})
     vim.keymap.set({"i", "s"}, "<C-L>", function() ls.jump( 1) end, {silent = true})
     vim.keymap.set({"i", "s"}, "<C-J>", function() ls.jump(-1) end, {silent = true})
-
     vim.keymap.set({"i", "s"}, "<C-E>", function()
       if ls.choice_active() then
         ls.change_choice(1)
       end
     end, {silent = true})
     local rep = require("luasnip.extras").rep
-
     local same = function (index)
       return f(function (arg)
         return arg[1]
@@ -34,10 +31,8 @@ return {
     end
 
     local split = function (inputstr, sep)
-      if sep == nil then
-        sep = "%s"
-      end
       local t = {}
+      
       for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
         table.insert(t, str)
       end
@@ -46,13 +41,12 @@ return {
 
     local parseArg = function (index)
       return f(function (arg)
-        -- [1][1] gets's the first line of text
-        print("parse arg " .. arg[1][1])
-        local parts = vim.split(arg[1][1], ".");
-        print(parts[#parts])
+        local parts = split(arg[1][1], ".");
+        print(parts[#parts]);
         return parts[#parts] or "";
       end, {index})
     end
+
     local dynamicNode = function (index)
       return d(index, function ()
         local nodes = {}
