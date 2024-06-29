@@ -32,7 +32,7 @@ return {
 
     local split = function (inputstr, sep)
       local t = {}
-      
+      -- Matches all characters that's not the seperator
       for str in string.gmatch(inputstr, "([^"..sep.."]+)") do
         table.insert(t, str)
       end
