@@ -12,11 +12,11 @@ local setCursorToNearestLink = function ()
   local minDistance = 999999
   -- Loop through the table
   for i = 1, #tbl-1 do
-    local startIndex = string.char(tbl[i])
-    local nextIndex = string.char(tbl[i+1])
+    local startChar = string.char(tbl[i])
+    local nextChar = string.char(tbl[i+1])
     -- check if we're on a start link or end link
-    local startMatches = startIndex == "[" and nextIndex == "["
-    local endMatches = startIndex == "]" and nextIndex == "]"
+    local startMatches = startChar == "[" and nextChar == "["
+    local endMatches = startChar == "]" and nextChar == "]"
     -- Calculate current distance
     local currentDistance = math.abs(cursorcol-i)
     -- If current distance is lower set that 
