@@ -1,5 +1,7 @@
 local data_path = vim.fn.stdpath('data') 
+print("data_path " .. data_path)
 local jdtls_path = data_path .. "/mason/packages/jdtls"
+print("jdtls_path " .. jdtls_path)
 local plugins_path = jdtls_path .. "/plugins"
 local jdtls = require('jdtls')
 local root_markers = { "mvnw", "gradlew", "pom.xml", "build.gradle" }
@@ -32,7 +34,7 @@ local config = {
     -- 💀
     '-javaagent:' .. jdtls_path .. '/lombok.jar',
 	-- This will change based on what version of jdtls you've downloaded
-    '-jar', plugins_path .. '/org.eclipse.equinox.launcher_1.6.500.v20230622-2056.jar',
+    '-jar', plugins_path .. '/org.eclipse.equinox.launcher_1.6.800.v20240330-1250.jar',
          -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                       ^^^^^^^^^^^^^^
          -- Must point to the                                                     Change this to
          -- eclipse.jdt.ls installation                                           the actual version
@@ -102,7 +104,6 @@ local config = {
         "org"
       },
     },
-    extendedClientCapabilities = extendedClientCapabilities,
     sources = {
       organizeImports = {
         starThreshold = 9999,

@@ -103,5 +103,3 @@ end, {desc = "Create a new markdown file"})
 
 -- Checkbox
 vim.keymap.set("n", "<leader>ch", vim.cmd.ObsidianToggleCheckbox)
-
-

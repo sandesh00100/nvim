@@ -7,7 +7,7 @@ return {
   'Conditional', 'Repeat', 'Operator', 'Structure', 'LineNr', 'NonText',
   'SignColumn', 'CursorLine', 'CursorLineNr', 'StatusLine', 'StatusLineNC',
   'EndOfBuffer',
-  },
+},
   extra_groups = {}, -- table: additional groups that should be cleared
   exclude_groups = {}, -- table: groups you don't want to clear
   }
