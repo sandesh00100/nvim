@@ -4,14 +4,15 @@ return {
     highlights = {
       {
         filter = {filetype = 'markdown'},
-        pattern = ".*QUESTION.*",
-        hl = "Constant"
+        pattern = ".*(QUESTION: .*?)",
+        hl = "question"
       },
       {
-        filter = {filetype = 'lua'},
-        pattern = ".*ex\\..*",
+        filter = {filetype = 'markdown'},
+        pattern = ".*Q:.*",
         hl = "constant"
       }
     }
   }
 }
+-- Q: sdfsdf

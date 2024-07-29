@@ -122,7 +122,8 @@ return {
       Relates To::[[$0]]
       ]==]
       ),
-
+      -- Custom styling
+      ls.parser.parse_snippet("question","QUESTION: $0?"),
     })
   end
 }

@@ -15,6 +15,8 @@ vim.api.nvim_create_autocmd('LspAttach', {
 	end,
 })
 
+vim.keymap.set("n", "<ESC>", "<cmd>:noh<CR>")
+
 -- Center the screen while navigating 
 vim.keymap.set("n", "<C-d>", "<C-d>zz")
 vim.keymap.set("n", "<C-u>", "<C-u>zz")
