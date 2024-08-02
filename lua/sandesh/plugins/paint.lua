@@ -9,10 +9,10 @@ return {
       },
       {
         filter = {filetype = 'markdown'},
-        pattern = ".*Q:.*",
-        hl = "constant"
+        pattern = ".*(TODO: .*)",
+        hl = "todocustom"
       }
     }
   }
 }
--- Q: sdfsdf
+-- TODO: sdfsdfsdfiwoejosdf

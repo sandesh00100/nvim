@@ -124,6 +124,7 @@ return {
       ),
       -- Custom styling
       ls.parser.parse_snippet("question","QUESTION: $0?"),
+      ls.parser.parse_snippet("todo","TODO: $0"),
     })
   end
 }
