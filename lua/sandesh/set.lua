@@ -23,12 +23,15 @@ vim.opt.softtabstop = 2   -- Number of spaces that a <Tab> counts for while perf
 vim.opt.autoindent = true -- Copy indent from current line when starting a new line
 vim.opt.smartindent = true -- Make indenting smart
 -- Custom highlight groups
-vim.api.nvim_set_hl(0, 'question', { fg = "#FEFEFE", bg = "#875201" })
--- #2CA1A4
+vim.api.nvim_set_hl(0, 'questioncustom', { fg = "#FEFEFE", bg = "#875201" })
 vim.api.nvim_set_hl(0, 'todocustom', { fg = "#000000", bg = "#87CEEB" })
-
+vim.api.nvim_set_hl(0, 'Visual', { fg = "#FEFEFE", bg = "#356063" })
+vim.api.nvim_set_hl(0, 'fixmecustom', { fg = "#000000", bg = "#E9A1A1" })
+vim.api.nvim_set_hl(0, 'CurSearch', { fg = "#FEFEFE", bg = "#6B0809", bold = true, underline = true})
+vim.api.nvim_set_hl(0, 'Search', { fg = "#000000", bg = "#E9A1A1" })
+ 
 vim.keymap.set("n", "<leader>bp", "<cmd>lua require'dap'.toggle_breakpoint()<cr>")
 vim.keymap.set("n", "<F5>", "<cmd>lua require'dap'.continue()<cr>")
-vim.keymap.set("n", "<F7>", "<cmd>lua require'dap'.step_over()<cr>")
-vim.keymap.set("n", "<F8>", "<cmd>lua require'dap'.step_into()<cr>")
+vim.keymap.set("n", "<F7>", "<cmd>lua require'dap'.step_into()<cr>")
+vim.keymap.set("n", "<F8>", "<cmd>lua require'dap'.step_over()<cr>")
 vim.keymap.set("n", "<F9>", "<cmd>lua require'dap'.step_out()<cr>")

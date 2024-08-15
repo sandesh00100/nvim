@@ -149,3 +149,36 @@ end, { noremap = true, desc="View Git logs"})
 vim.keymap.set('n', '<leader>gfl', function ()
   require('telescope.builtin').git_bcommits();
 end, { noremap = true, desc="View Git file logs"})
+
+vim.keymap.set('n', '<leader>lf', function()
+  local dir = vim.fn.expand('%:h')
+  require('telescope.builtin').find_files({find_command={"find",dir,"-maxdepth","1","-type","f"}})
+end,{
+  desc = "Telescope search on directory of the current file, non recursively"
+})
+
+vim.keymap.set('n', '<leader>ef', function()
+  -- Ignore build, bin, and sort by the file types that have the most amount of files
+  local handle = io.popen("find . -type f ! -path 'build' ! -path 'bin' ! -path 'rebased' ! -path '\\.git' | awk -F '.' '{print $NF}' | rg -v '/' | sort | uniq -c | sort -nr | awk '{print $NF}' ")
+  local result = handle:read("*a")
+  handle:close()
+
+  -- Split string
+  local fileTypes = {}
+  for line in result.gmatch(result, "([^\n]+)") do
+    table.insert(fileTypes, line)
+  end
+
+  -- Prompt for file type
+  vim.ui.select(fileTypes, {
+    prompt = "File Type",
+    telescope = require("telescope.themes").get_dropdown(),
+  },
+  function (fileType)
+    -- Telescope display
+    require('telescope.builtin').find_files({find_command={"find",".","-name","*." .. fileType,"-type","f"}})
+  end
+  )
+end,{
+  desc = "Finds a particular file type after prompting"
+})

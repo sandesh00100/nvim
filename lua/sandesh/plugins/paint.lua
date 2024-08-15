@@ -5,12 +5,20 @@ return {
       {
         filter = {filetype = 'markdown'},
         pattern = ".*(QUESTION: .*?)",
-        hl = "question"
+        hl = "questioncustom"
       },
       {
         filter = {filetype = 'markdown'},
         pattern = ".*(TODO: .*)",
         hl = "todocustom"
+      },{
+        filter = {filetype = 'python'},
+        pattern = ".*(TODO: .*)",
+        hl = "todocustom"
+      },{
+        filter = {filetype = 'python'},
+        pattern = ".*(FIXME: .*)",
+        hl = "fixmecustom"
       }
     }
   }
