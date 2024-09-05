@@ -3,6 +3,8 @@ function string:endswith(suffix)
 	return self:sub(-#suffix) == suffix
 end
 
+vim.keymap.set("n", "<leader>tl", "<cmd>:Telescope<cr>")
+
 local builtin = require('telescope.builtin')
 vim.keymap.set('n', '<leader>pf', function ()
 	builtin.find_files({wrap_results=true})
@@ -44,6 +46,10 @@ vim.keymap.set('n', '<leader>mt',function()
 	else 
 		builtin.treesitter({default_text=":function:"})
 	end
+end)
+
+vim.keymap.set('n', '<leader>ct',function() 
+  builtin.treesitter({default_text=":type:"})
 end)
 
 -- File tree

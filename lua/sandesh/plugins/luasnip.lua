@@ -104,7 +104,7 @@ return {
       ]]
       ),
       -- Mermaid snippets
-      ls.parser.parse_snippet("mermaid","```mermaids\n$0\n```"),
+      ls.parser.parse_snippet("mermaid","```mermaid\n$0\n```"),
       ls.parser.parse_snippet("flowchart","```mermaid\nflowchart $1;\n$0\n```"),
       ls.parser.parse_snippet("timeline",
       [[
