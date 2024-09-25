@@ -14,7 +14,6 @@ vim.o.cursorline = true
 vim.opt.conceallevel = 2
 vim.opt.showmode = false
 vim.cmd("hi Search guibg=peru")
-vim.o.textwidth=120
 -- Global settings
 vim.opt.tabstop = 2       -- Number of spaces that a <Tab> in the file counts for
 vim.opt.shiftwidth = 2    -- Number of spaces to use for each step of (auto)indent
