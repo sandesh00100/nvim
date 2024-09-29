@@ -2,7 +2,7 @@ local cmp = require('cmp')
 local luasnip = require('luasnip')
 require('luasnip.loaders.from_vscode').lazy_load()
 luasnip.config.setup({})
-
+-- rg "project: " | awk -F ': ' '$2 !=""  {print $2}' | sort | uniq
 cmp.setup({
   snippet = {
     expand = function(args)
@@ -54,4 +54,22 @@ cmp.setup({
     completion = cmp.config.window.bordered(),
     documentation = cmp.config.window.bordered(),
   },
+})
+
+-- Filetype-specific setup
+cmp.setup.filetype('markdown', {
+  sources = cmp.config.sources({
+    { name = 'project' },   -- And a snippet source
+    { name = "nvim_lsp" }, -- lsp 
+    { name = "luasnip" }, -- snippets
+    { name = "buffer" }, -- text within current buffer
+    { name = "path" }, -- file system paths
+  })
+})
+
+vim.api.nvim_create_autocmd("BufEnter", {
+    pattern = "*.md",
+    callback = function()
+        vim.fn.system("rg --no-filename -g '*.md' -e '^project: .*' 2>/dev/null | sed 's/[ \\t]*$//' | sort | uniq > /tmp/project-cmp-source.txt")
+    end,
 })
