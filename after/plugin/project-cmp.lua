@@ -18,9 +18,6 @@ function source:complete(params, callback)
   local cachedBuffNr = self.cache.buffNr
   local currentLine = vim.api.nvim_get_current_line()
 
-  if not string.find(currentLine, "project: ") then
-  end
-
   if string.find(currentLine, "project: ") then
     local cachedProjects = self.cache.projects
     vim.notify("Completing project")
