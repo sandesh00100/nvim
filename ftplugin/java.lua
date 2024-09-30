@@ -1,7 +1,5 @@
 local data_path = vim.fn.stdpath('data') 
-print("data_path " .. data_path)
 local jdtls_path = data_path .. "/mason/packages/jdtls"
-print("jdtls_path " .. jdtls_path)
 local plugins_path = jdtls_path .. "/plugins"
 local jdtls = require('jdtls')
 local root_markers = { "mvnw", "gradlew", "pom.xml", "build.gradle" }
@@ -110,6 +108,7 @@ local config = {
         staticStarThreshold = 9999,
       },
     },
+    extendedClientCapabilities = jdtls.extendedClientCapabilities,
     codeGeneration = {
       toString = {
         template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}",
