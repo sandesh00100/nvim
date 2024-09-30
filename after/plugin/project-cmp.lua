@@ -20,7 +20,6 @@ function source:complete(params, callback)
 
   if string.find(currentLine, "project: ") then
     local cachedProjects = self.cache.projects
-    vim.notify("Completing project")
     -- Only reload the completion if there is nothing cached or if we move to a new buffer
     if not cachedProjects or cachedBuffNr ~= curBuffNr then
       local projects = {}
@@ -42,7 +41,7 @@ function source:complete(params, callback)
         self.cache.buffNr = curBuffNr
         callback(projects)
       else
-        vim.notify("Error: Unable to open file")
+        vim.notify("Error: Unable to open file", "error")
       end
     else
       callback(cachedProjects)
@@ -81,7 +80,7 @@ function source:complete(params, callback)
         self.cache.buffNr = curBuffNr
         callback(tags)
       else
-        vim.notify("Error: Unable to open file")
+        vim.notify("Error: Unable to open file", "error")
       end
     else
       callback(cachedTags)
