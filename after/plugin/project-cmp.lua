@@ -36,6 +36,8 @@ function source:complete(params, callback)
           end
         end
         file:close()
+
+        -- Cache the projects
         self.cache.projects = projects
         self.cache.buffNr = curBuffNr
         callback(projects)
@@ -54,8 +56,7 @@ function source:complete(params, callback)
       local file = io.open("/tmp/tags-cmp-source.txt", "r")
       if file then
         for line in file:lines() do
-          -- split string for a line on ': ' and remove the leading and trialing slash
-          -- Match any number of characters or whitespace but it has to end with a word
+          -- match everything after a ": "
           local csvTags = string.match(line, ": (.*)")
           if csvTags then
             -- split string on a comma
@@ -75,6 +76,7 @@ function source:complete(params, callback)
           table.insert(tags, {label = key})
         end
         file:close()
+        -- cache the tags
         self.cache.tags = tags
         self.cache.buffNr = curBuffNr
         callback(tags)
