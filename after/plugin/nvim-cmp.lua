@@ -70,6 +70,7 @@ cmp.setup.filetype('markdown', {
 vim.api.nvim_create_autocmd("BufEnter", {
     pattern = "*.md",
     callback = function()
-        vim.fn.system("rg --no-filename -g '*.md' -e '^project: .*' 2>/dev/null | sed 's/[ \\t]*$//' | sort | uniq > /tmp/project-cmp-source.txt")
+      vim.fn.system("rg --no-filename -g '*.md' -e '^project: .*' 2>/dev/null | sed 's/[ \\t]*$//' | sort | uniq > /tmp/project-cmp-source.txt")
+      vim.fn.system("rg --no-filename -g '*.md' -e '^tags: .*' 2>/dev/null | sed 's/[ \\t]*$//' | sort | uniq > /tmp/tags-cmp-source.txt")
     end,
 })
