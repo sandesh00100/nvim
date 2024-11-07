@@ -87,6 +87,13 @@ return {
       ),
     });
 
+
+    ls.add_snippets("java", {
+      -- Custom styling
+      ls.parser.parse_snippet("question","QUESTION: $0?"),
+      ls.parser.parse_snippet("todo","TODO: $0"),
+      ls.parser.parse_snippet("fixme","FIXME: $0"),
+    })
     ls.add_snippets("markdown", {
       -- Code block snippets
       ls.parser.parse_snippet("bash","```bash\n$0\n```"),

@@ -32,7 +32,7 @@ local config = {
     -- 💀
     '-javaagent:' .. jdtls_path .. '/lombok.jar',
 	-- This will change based on what version of jdtls you've downloaded
-    '-jar', plugins_path .. '/org.eclipse.equinox.launcher_1.6.800.v20240330-1250.jar',
+    '-jar', plugins_path .. '/org.eclipse.equinox.launcher_1.6.900.v20240613-2009.jar',
          -- ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^                                       ^^^^^^^^^^^^^^
          -- Must point to the                                                     Change this to
          -- eclipse.jdt.ls installation                                           the actual version
@@ -109,6 +109,7 @@ local config = {
       },
     },
     extendedClientCapabilities = jdtls.extendedClientCapabilities,
+    capabilities = require('cmp_nvim_lsp').default_capabilities(),
     codeGeneration = {
       toString = {
         template = "${object.className}{${member.name()}=${member.value}, ${otherMembers}}",
@@ -159,6 +160,8 @@ vim.keymap.set('n', '<leader>rp', dap.repl.open, {});
 -- TODO: Need to follow https://www.youtube.com/watch?v=kbRIosrvof0&t=489s for having method level debug 
 -- TODO: Setting up debugger, might want to move some of this into it's own lua file
 config['on_attach'] = function(client, bufnr)
+  print("Attaching")
+  vim.keymap.set('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', {noremap=true, silent=true})
   jdtls.setup_dap({hotcodereplace='auto'})
   jdtls.dap.setup_dap_main_class_configs()
   require("javaKeyMaps").map_java_keys(bufnr);

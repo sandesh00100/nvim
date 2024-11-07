@@ -34,3 +34,5 @@ vim.keymap.set("n", "<F5>", "<cmd>lua require'dap'.continue()<cr>")
 vim.keymap.set("n", "<F7>", "<cmd>lua require'dap'.step_into()<cr>")
 vim.keymap.set("n", "<F8>", "<cmd>lua require'dap'.step_over()<cr>")
 vim.keymap.set("n", "<F9>", "<cmd>lua require'dap'.step_out()<cr>")
+
+vim.opt.termguicolors = true

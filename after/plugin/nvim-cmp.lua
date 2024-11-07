@@ -60,6 +60,7 @@ cmp.setup({
 cmp.setup.filetype('markdown', {
   sources = cmp.config.sources({
     { name = 'project' },   -- And a snippet source
+    { name = 'fileNames' },   -- And a snippet source
     { name = "nvim_lsp" }, -- lsp 
     { name = "luasnip" }, -- snippets
     { name = "buffer" }, -- text within current buffer
@@ -68,9 +69,24 @@ cmp.setup.filetype('markdown', {
 })
 
 vim.api.nvim_create_autocmd("BufEnter", {
+    group = vim.api.nvim_create_augroup("markdown-completion", {clear = true}),
     pattern = "*.md",
     callback = function()
-      vim.fn.system("rg --no-filename -g '*.md' -e '^project: .*' 2>/dev/null | sed 's/[ \\t]*$//' | sort | uniq > /tmp/project-cmp-source.txt")
-      vim.fn.system("rg --no-filename -g '*.md' -e '^tags: .*' 2>/dev/null | sed 's/[ \\t]*$//' | sort | uniq > /tmp/tags-cmp-source.txt")
+      vim.schedule(function ()
+        vim.fn.system("rg --no-filename -g '*.md' -e '^project: .*' 2>/dev/null | sed 's/[ \\t]*$//' | sort | uniq > /tmp/project-cmp-source.txt")
+        vim.fn.system("rg --no-filename -g '*.md' -e '^tags: .*' 2>/dev/null | sed 's/[ \\t]*$//' | sort | uniq > /tmp/tags-cmp-source.txt")
+      end)
     end,
+})
+
+vim.api.nvim_create_autocmd("VimEnter",{
+  group = vim.api.nvim_create_augroup("cmp_fileNames",{clear = true}),
+  pattern = "*",
+  callback = function ()
+    vim.schedule(function ()
+      -- get the currrent working dir
+      local cwd = vim.fn.getcwd()
+      vim.fn.system("/Users/sandeshshrestha/git/scripts/parseMarkdownFile.py -f " .. cwd .. "| sort | uniq > /tmp/fileCompletion.txt")
+    end)
+  end
 })

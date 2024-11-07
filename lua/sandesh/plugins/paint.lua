@@ -19,7 +19,20 @@ return {
         filter = {filetype = 'python'},
         pattern = ".*(FIXME: .*)",
         hl = "fixmecustom"
+      },{
+        filter = {filetype = 'java'},
+        pattern = ".*(TODO: .*)",
+        hl = "todocustom"
+      },{
+        filter = {filetype = 'java'},
+        pattern = ".*(FIXME: .*)",
+        hl = "fixmecustom"
+      },{
+        filter = {filetype = 'java'},
+        pattern = ".*(QUESTION: .*?)",
+        hl = "questioncustom"
       }
+
     }
   }
 }

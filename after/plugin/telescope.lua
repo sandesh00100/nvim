@@ -78,14 +78,13 @@ vim.keymap.set('n', '<leader>di',function()
 	builtin.diagnostics({default_text=":I:", initial_mode="normal", wrap_results=true})
 end)
 
--- Diagnostics Next
 vim.keymap.set('n', '<leader>dn',function() 
-	vim.diagnostic.goto_next();
+	vim.diagnostic.goto_next({severity = vim.diagnostic.severity.ERROR});
 end)
 
 -- Diagnostics Previous
 vim.keymap.set('n', '<leader>dp',function() 
-	vim.diagnostic.goto_prev();
+	vim.diagnostic.goto_prev({ severity = vim.diagnostic.severity.ERROR });
 end)
 --
 
@@ -124,6 +123,11 @@ end,{
   desc = "Telescope search on the directory in the nvim tree"
 })
 
+vim.keymap.set('n', '<leader>qf', function() 
+  require('telescope.builtin').quickfix({})
+end,{
+  desc = "Show quickfix list"
+})
 
 vim.keymap.set('n', '<leader>df', function() 
   local dir = vim.fn.expand("%:p:h")
