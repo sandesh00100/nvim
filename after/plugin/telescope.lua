@@ -195,7 +195,6 @@ end,{
 
 vim.keymap.set('n', '<leader>xs', function ()
   local regex = vim.fn.input("Regex > ")
-  vim.notify(regex)
 	builtin.grep_string({search = regex, use_regex=true})
 end)
 
@@ -225,13 +224,13 @@ vim.keymap.set('n', '<leader>ot', function ()
     for key, _ in pairs(tagSet) do
       table.insert(tags, key)
     end
-
+    table.sort(tags)
     vim.ui.select(tags,{
       prompt = "Tags",
       telescope = require("telescope.themes").get_dropdown()
     },
       function(selectedTag)
-        local regex = '^tags:.*' .. selectedTag .. '.*'
+        local regex = [[^tags:.*\b]] .. selectedTag .. [[\b.*]]
         builtin.grep_string({search=regex, use_regex=true})
       end
       )
