@@ -192,3 +192,47 @@ vim.keymap.set('n', '<leader>ef', function()
 end,{
   desc = "Finds a particular file type after prompting"
 })
+
+vim.keymap.set('n', '<leader>xs', function ()
+  local regex = vim.fn.input("Regex > ")
+  vim.notify(regex)
+	builtin.grep_string({search = regex, use_regex=true})
+end)
+
+vim.keymap.set('n', '<leader>ot', function ()
+    local file = io.open("/tmp/tags-cmp-source.txt", "r")
+    local tagSet = {}
+    local tags = {}
+    -- TODO: Make this logic shared, could we do this logic on the write, we can put this on the autocmd
+    if file then
+        for line in file:lines() do
+          -- match everything after a ": "
+          local csvTags = string.match(line, ": (.*)")
+          if csvTags then
+            -- split string on a comma
+            for tag in csvTags:gmatch("([^,]+)") do
+              -- all words and forward slashes and without the leading and trailing whitespace
+              local formattedTag = string.match(tag, "%s*([/%w]*)%s*")
+              if not tagSet[formattedTag] then
+                tagSet[formattedTag] = true
+              end
+            end
+          end
+        end
+      file:close()
+    end
+
+    for key, _ in pairs(tagSet) do
+      table.insert(tags, key)
+    end
+
+    vim.ui.select(tags,{
+      prompt = "Tags",
+      telescope = require("telescope.themes").get_dropdown()
+    },
+      function(selectedTag)
+        local regex = '^tags:.*' .. selectedTag .. '.*'
+        builtin.grep_string({search=regex, use_regex=true})
+      end
+      )
+end)

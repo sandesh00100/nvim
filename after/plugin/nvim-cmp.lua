@@ -74,19 +74,20 @@ vim.api.nvim_create_autocmd("BufEnter", {
     callback = function()
       vim.schedule(function ()
         vim.fn.system("rg --no-filename -g '*.md' -e '^project: .*' 2>/dev/null | sed 's/[ \\t]*$//' | sort | uniq > /tmp/project-cmp-source.txt")
-        vim.fn.system("rg --no-filename -g '*.md' -e '^tags: .*' 2>/dev/null | sed 's/[ \\t]*$//' | sort | uniq > /tmp/tags-cmp-source.txt")
+        vim.fn.system("rg --no-filename --no-heading -g '*.md' -e '^tags:.*' 2>/dev/null | sort | uniq > /tmp/tags-cmp-source.txt")
       end)
     end,
 })
 
 vim.api.nvim_create_autocmd("VimEnter",{
   group = vim.api.nvim_create_augroup("cmp_fileNames",{clear = true}),
-  pattern = "*",
+  pattern = "*/Notes/*",
   callback = function ()
     vim.schedule(function ()
       -- get the currrent working dir
       local cwd = vim.fn.getcwd()
       vim.fn.system("/Users/sandeshshrestha/git/scripts/parseMarkdownFile.py -f " .. cwd .. "| sort | uniq > /tmp/fileCompletion.txt")
+      vim.notify("Completed initial file completion file")
     end)
   end
 })

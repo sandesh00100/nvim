@@ -6,7 +6,7 @@ vim.o.spell = true
 
 vim.o.background = "dark" -- or "light" for light mode
 vim.o.clipboard = "unnamed" -- or "light" for light mode
-vim.cmd([[colorscheme nordic]])
+vim.cmd([[colorscheme catppuccin-mocha]])
 vim.opt.guifont='Hack NFM'
 
 vim.o.expandtab = true
@@ -34,5 +34,5 @@ vim.keymap.set("n", "<F5>", "<cmd>lua require'dap'.continue()<cr>")
 vim.keymap.set("n", "<F7>", "<cmd>lua require'dap'.step_into()<cr>")
 vim.keymap.set("n", "<F8>", "<cmd>lua require'dap'.step_over()<cr>")
 vim.keymap.set("n", "<F9>", "<cmd>lua require'dap'.step_out()<cr>")
-
+vim.keymap.set("n", "oi", "<CMD>Oil<CR>", { desc = "Open parent directory" })
 vim.opt.termguicolors = true
