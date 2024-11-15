@@ -73,8 +73,8 @@ vim.api.nvim_create_autocmd("BufEnter", {
     pattern = "*.md",
     callback = function()
       vim.schedule(function ()
-        vim.fn.system("rg --no-filename -g '*.md' -e '^project: .*' 2>/dev/null | sed 's/[ \\t]*$//' | sort | uniq > /tmp/project-cmp-source.txt")
-        vim.fn.system("rg --no-filename --no-heading -g '*.md' -e '^tags:.*' 2>/dev/null | sort | uniq > /tmp/tags-cmp-source.txt")
+        vim.fn.system([[rg --no-filename --no-heading -g '*.md' -e '^tags:.*' 2>/dev/null | awk -F ':' '{print $2}' | tr ',' '\n' | awk '{$1=$1;print}' | sort | uniq > /tmp/tags-cmp-source.txt]])
+        vim.fn.system([[rg --no-filename --no-heading -g '*.md' -e '^project:.*' 2>/dev/null | awk -F ':' '{print $2}' | tr ',' '\n' | awk '{$1=$1;print}' | sort | uniq > /tmp/project-cmp-source.txt]])
       end)
     end,
 })

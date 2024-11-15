@@ -27,12 +27,7 @@ function source:complete(params, callback)
       local file = io.open("/tmp/project-cmp-source.txt", "r")
       if file then
         for line in file:lines() do
-          -- split string for a line on ': ' and remove the leading and trialing slash
-          -- Match any number of characters or whitespace but it has to end with a word
-          local project = string.match(line, ": ([%w%s]*%w)%s*$")
-          if project then
-            table.insert(projects, {label = project})
-          end
+          table.insert(projects, {label = line})
         end
         file:close()
 
@@ -49,30 +44,13 @@ function source:complete(params, callback)
   elseif string.find(currentLine, "tags: ") then
     local cachedTags = self.cache.tags
     if not cachedTags or cachedBuffNr ~= curBuffNr then
-      local tagSet = {}
       local tags = {}
       -- open a file and read it line by line
       local file = io.open("/tmp/tags-cmp-source.txt", "r")
       if file then
         for line in file:lines() do
           -- match everything after a ": "
-          local csvTags = string.match(line, ": (.*)")
-          if csvTags then
-            -- split string on a comma
-            for tag in csvTags:gmatch("([^,]+)") do
-              -- all words and forward slashes and without the leading and trailing whitespace
-              local formattedTag = string.match(tag, "%s*([/%w]*)%s*")
-              if not tagSet[formattedTag] then
-                tagSet[formattedTag] = true
-              end
-            end
-          end
-
-        end
-
-        -- convert set into completion table
-        for key, _ in pairs(tagSet) do
-          table.insert(tags, {label = key})
+          table.insert(tags, {label = line})
         end
         file:close()
         -- cache the tags

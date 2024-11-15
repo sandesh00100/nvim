@@ -200,31 +200,14 @@ end)
 
 vim.keymap.set('n', '<leader>ot', function ()
     local file = io.open("/tmp/tags-cmp-source.txt", "r")
-    local tagSet = {}
     local tags = {}
-    -- TODO: Make this logic shared, could we do this logic on the write, we can put this on the autocmd
     if file then
         for line in file:lines() do
-          -- match everything after a ": "
-          local csvTags = string.match(line, ": (.*)")
-          if csvTags then
-            -- split string on a comma
-            for tag in csvTags:gmatch("([^,]+)") do
-              -- all words and forward slashes and without the leading and trailing whitespace
-              local formattedTag = string.match(tag, "%s*([/%w]*)%s*")
-              if not tagSet[formattedTag] then
-                tagSet[formattedTag] = true
-              end
-            end
-          end
+          table.insert(tags, line)
         end
       file:close()
     end
 
-    for key, _ in pairs(tagSet) do
-      table.insert(tags, key)
-    end
-    table.sort(tags)
     vim.ui.select(tags,{
       prompt = "Tags",
       telescope = require("telescope.themes").get_dropdown()
