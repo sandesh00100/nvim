@@ -3,6 +3,28 @@ function string:endswith(suffix)
 	return self:sub(-#suffix) == suffix
 end
 
+local function getFileLines(fileName)
+    local file = io.open(fileName, "r")
+    local projects = {}
+    if file then
+        for line in file:lines() do
+          if line and line ~= "" then
+            table.insert(projects, line)
+          end
+        end
+      file:close()
+    end
+    return projects
+end
+
+local function getProjects()
+    return getFileLines("/tmp/project-cmp-source.txt")
+end
+
+local function getTagNames()
+    return getFileLines("/tmp/project-cmp-source.txt")
+end
+
 vim.keymap.set("n", "<leader>tl", "<cmd>:Telescope<cr>")
 
 local builtin = require('telescope.builtin')
@@ -214,6 +236,51 @@ vim.keymap.set('n', '<leader>ot', function ()
     },
       function(selectedTag)
         local regex = [[^tags:.*\b]] .. selectedTag .. [[\b.*]]
+        builtin.grep_string({search=regex, use_regex=true})
+      end
+      )
+end)
+
+vim.keymap.set('n', '<leader>op', function ()
+    local projects = getProjects();
+    vim.ui.select(projects,{
+      prompt = "Projects",
+      telescope = require("telescope.themes").get_dropdown()
+    },
+      function(selectedTag)
+        if (selectedTag) then
+          local regex = [[^project:.*\b]] .. selectedTag .. [[\b.*]]
+          builtin.grep_string({search=regex, use_regex=true})
+        end
+      end
+      )
+end)
+
+
+vim.keymap.set('n', '<leader>os', function ()
+    local status = {'backlog','doing','done'}
+    vim.ui.select(status,{
+      prompt = "Status",
+      telescope = require("telescope.themes").get_dropdown()
+    },
+      function(selectedTag)
+        local regex = [[^status:.*\b]] .. selectedTag .. [[\b.*]]
+        builtin.grep_string({search=regex, use_regex=true})
+      end
+      )
+end)
+
+
+vim.keymap.set('n', '<leader>os', function ()
+    local status = {'backlog','doing','done'}
+    local priority = {'High','Medium','Low'}
+    local projects = getProjects();
+    vim.ui.select(status,{
+      prompt = "Status",
+      telescope = require("telescope.themes").get_dropdown()
+    },
+      function(selectedTag)
+        local regex = [[^status:.*\b]] .. selectedTag .. [[\b.*]]
         builtin.grep_string({search=regex, use_regex=true})
       end
       )

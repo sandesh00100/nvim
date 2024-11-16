@@ -32,7 +32,9 @@ function source:complete(params, callback)
     fileReferences = {}
     if file then
       for line in file:lines() do
-        table.insert(fileReferences, { label = line, cmp.lsp.CompletionItemKind.Text})
+        if line and line ~= "" then
+          table.insert(fileReferences, { label = line, cmp.lsp.CompletionItemKind.Text})
+        end
       end
       file:close()
     end

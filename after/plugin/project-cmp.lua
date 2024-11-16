@@ -27,7 +27,9 @@ function source:complete(params, callback)
       local file = io.open("/tmp/project-cmp-source.txt", "r")
       if file then
         for line in file:lines() do
-          table.insert(projects, {label = line})
+          if line and line ~= "" then
+            table.insert(projects, {label = line})
+          end
         end
         file:close()
 
@@ -50,7 +52,9 @@ function source:complete(params, callback)
       if file then
         for line in file:lines() do
           -- match everything after a ": "
-          table.insert(tags, {label = line})
+          if line and line ~= "" then
+            table.insert(tags, {label = line})
+          end
         end
         file:close()
         -- cache the tags
