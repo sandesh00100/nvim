@@ -17,11 +17,14 @@ local function getFileLines(fileName)
     return projects
 end
 
+local function buildRegexTable(currentTable, expression)
+end
+
 local function getProjects()
     return getFileLines("/tmp/project-cmp-source.txt")
 end
 
-local function getTagNames()
+local function getTags()
     return getFileLines("/tmp/project-cmp-source.txt")
 end
 
@@ -271,17 +274,67 @@ vim.keymap.set('n', '<leader>os', function ()
 end)
 
 
-vim.keymap.set('n', '<leader>os', function ()
-    local status = {'backlog','doing','done'}
-    local priority = {'High','Medium','Low'}
-    local projects = getProjects();
-    vim.ui.select(status,{
-      prompt = "Status",
+vim.keymap.set('n', '<leader>of', function ()
+  local status = {'backlog','doing','done'}
+  local priorities = {'High','Medium','Low'}
+  local projects = getProjects();
+  local findCommand = {
+      '~/git/scripts/findAllExpressions.py', '-f' , '.'
+  };
+  local initialSize = #findCommand
+  vim.ui.select(status,{
+    prompt = "Status",
+    telescope = require("telescope.themes").get_dropdown()
+  },
+  function(selectedStatus)
+    if (selectedStatus) then
+      if (#findCommand == initialSize) then
+        table.insert(findCommand, '-e')
+      end
+      table.insert(findCommand, [['^status:.*\b]] .. selectedStatus .. [[\b.*']])
+    end
+
+    vim.ui.select(priorities,{
+      prompt = "Priority",
       telescope = require("telescope.themes").get_dropdown()
     },
-      function(selectedTag)
-        local regex = [[^status:.*\b]] .. selectedTag .. [[\b.*]]
-        builtin.grep_string({search=regex, use_regex=true})
+    function(selectedPriority)
+      if (selectedPriority) then
+        if (#findCommand == initialSize) then
+          table.insert(findCommand, '-e')
+        end
+        table.insert(findCommand, [['^priority:.*\b]] .. selectedPriority .. [[\b.*']])
       end
-      )
+      vim.ui.select(projects,{
+        prompt = "Project",
+        telescope = require("telescope.themes").get_dropdown()
+      },
+      function(selectedProject)
+        if (selectedProject) then
+          if (#findCommand == initialSize) then
+            table.insert(findCommand, '-e')
+          end
+          table.insert(findCommand, [['^project:.*\b]] .. selectedProject .. [[\b.*']])
+        end
+        local command = table.concat(findCommand, " ")
+        vim.notify(command)
+        local out = vim.fn.systemlist(command)
+        local qflist = {}
+        for _, value in pairs(out) do 
+          print(value)
+          table.insert(qflist, {filename = value, text = value, lnum=1})
+        end
+        if (#qflist > 0) then
+          vim.fn.setqflist(qflist)
+        else
+          vim.notify("No Results")
+        end
+
+        require('telescope.builtin').quickfix({})
+      end)
+    end)
+  end)
 end)
+
+
+ -- ~/git/scripts/findAllExpressions.py -f . -e "^priority:.*\bHigh\b.*" -e "^project:.*\bPersonal\b.*"
