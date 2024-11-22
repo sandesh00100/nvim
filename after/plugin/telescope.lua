@@ -261,80 +261,52 @@ end)
 
 
 vim.keymap.set('n', '<leader>os', function ()
-    local status = {'backlog','doing','done'}
-    vim.ui.select(status,{
-      prompt = "Status",
-      telescope = require("telescope.themes").get_dropdown()
-    },
-      function(selectedTag)
-        local regex = [[^status:.*\b]] .. selectedTag .. [[\b.*]]
-        builtin.grep_string({search=regex, use_regex=true})
-      end
-      )
+    local regex = [[^status:.*\bdoing\b.*]]
+    builtin.grep_string({search=regex, use_regex=true})
 end)
 
 
 vim.keymap.set('n', '<leader>of', function ()
-  local status = {'backlog','doing','done'}
   local priorities = {'High','Medium','Low'}
   local projects = getProjects();
   local findCommand = {
       '~/git/scripts/findAllExpressions.py', '-f' , '.'
   };
-  local initialSize = #findCommand
-  vim.ui.select(status,{
-    prompt = "Status",
+  table.insert(findCommand, '-e')
+  table.insert(findCommand, [['^status:.*backlog\b.*']])
+
+  vim.ui.select(priorities,{
+    prompt = "Priority",
     telescope = require("telescope.themes").get_dropdown()
   },
-  function(selectedStatus)
-    if (selectedStatus) then
-      if (#findCommand == initialSize) then
-        table.insert(findCommand, '-e')
-      end
-      table.insert(findCommand, [['^status:.*\b]] .. selectedStatus .. [[\b.*']])
+  function(selectedPriority)
+    if (selectedPriority) then
+      table.insert(findCommand, [['^priority:.*\b]] .. selectedPriority .. [[\b.*']])
     end
-
-    vim.ui.select(priorities,{
-      prompt = "Priority",
+    vim.ui.select(projects,{
+      prompt = "Project",
       telescope = require("telescope.themes").get_dropdown()
     },
-    function(selectedPriority)
-      if (selectedPriority) then
-        if (#findCommand == initialSize) then
-          table.insert(findCommand, '-e')
-        end
-        table.insert(findCommand, [['^priority:.*\b]] .. selectedPriority .. [[\b.*']])
+    function(selectedProject)
+      if (selectedProject) then
+        table.insert(findCommand, [['^project:.*\b]] .. selectedProject .. [[\b.*']])
       end
-      vim.ui.select(projects,{
-        prompt = "Project",
-        telescope = require("telescope.themes").get_dropdown()
-      },
-      function(selectedProject)
-        if (selectedProject) then
-          if (#findCommand == initialSize) then
-            table.insert(findCommand, '-e')
-          end
-          table.insert(findCommand, [['^project:.*\b]] .. selectedProject .. [[\b.*']])
-        end
-        local command = table.concat(findCommand, " ")
-        vim.notify(command)
-        local out = vim.fn.systemlist(command)
-        local qflist = {}
-        for _, value in pairs(out) do 
-          print(value)
-          table.insert(qflist, {filename = value, text = value, lnum=1})
-        end
-        if (#qflist > 0) then
-          vim.fn.setqflist(qflist)
-        else
-          vim.notify("No Results")
-        end
-
+      local command = table.concat(findCommand, " ")
+      local out = vim.fn.systemlist(command)
+      local qflist = {}
+      for _, value in pairs(out) do 
+        print(value)
+        table.insert(qflist, {filename = value, text = value, lnum=1})
+      end
+      if (#qflist > 0) then
+        vim.fn.setqflist(qflist)
         require('telescope.builtin').quickfix({})
-      end)
+      else
+        vim.notify("No Results")
+      end
     end)
   end)
 end)
 
 
- -- ~/git/scripts/findAllExpressions.py -f . -e "^priority:.*\bHigh\b.*" -e "^project:.*\bPersonal\b.*"
+-- ~/git/scripts/findAllExpressions.py -f . -e "^priority:.*\bHigh\b.*" -e "^project:.*\bPersonal\b.*"

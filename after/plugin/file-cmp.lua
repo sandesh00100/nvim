@@ -1,6 +1,9 @@
 local source = {}
 local cmp =  require('cmp')
 
+function source:canAutoComplete(line, cursorCol)
+end
+
 function source.new()
   local self = setmetatable({cache = {buffNr = nil, fileReferences = nil, buffNr = nil}},{__index = source})
   return self
@@ -45,6 +48,7 @@ function source:complete(params, callback)
   end
   -- get current line from buffer
   local line = vim.api.nvim_get_current_line()
+  local cursorCol = vim.api.nvim_win_get_cursor(0)[2]
   -- check if line contains [[
   if string.match(line, '%[%[') then
     callback({items = fileReferences, isIncomplete = true})

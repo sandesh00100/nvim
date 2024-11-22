@@ -88,7 +88,7 @@ return {
     });
 
 
-    ls.add_snippets("java", {
+    ls.add_snippets("all", {
       -- Custom styling
       ls.parser.parse_snippet("question","QUESTION: $0?"),
       ls.parser.parse_snippet("todo","TODO: $0"),
@@ -129,9 +129,6 @@ return {
       Relates To::[[$0]]
       ]==]
       ),
-      -- Custom styling
-      ls.parser.parse_snippet("question","QUESTION: $0?"),
-      ls.parser.parse_snippet("todo","TODO: $0"),
     })
   end
 }
