@@ -295,7 +295,6 @@ vim.keymap.set('n', '<leader>of', function ()
       local out = vim.fn.systemlist(command)
       local qflist = {}
       for _, value in pairs(out) do 
-        print(value)
         table.insert(qflist, {filename = value, text = value, lnum=1})
       end
       if (#qflist > 0) then

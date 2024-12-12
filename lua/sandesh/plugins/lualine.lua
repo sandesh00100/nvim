@@ -1,10 +1,19 @@
 local function calculateDate()
   local file_name = vim.fn.expand("%:t")
   local year, month, day = file_name:match("(%d+)-(%d+)-(%d+)")
+  local day_to_symbol = {
+     Monday = '月',
+     Tuesday = '火',
+     Wednesday='水',
+     Thursday='木',
+     Friday='金',
+     Saturday='土',
+     Sunday='日'
+  }
   if year and month and day then 
       local timestamp = os.time{year=year, month=month, day=day}
       local day_of_week = os.date("%A", timestamp)
-      return day_of_week
+      return day_to_symbol[day_of_week] .. " " .. day_of_week
   end
   return ""
 end
@@ -34,11 +43,11 @@ return {
   },
   sections = {
     lualine_a = {'mode'},
-    lualine_b = {'branch', 'diff', 'diagnostics'},
-    lualine_c = {'filename'},
-    lualine_x = {'encoding', 'fileformat', 'filetype'},
-    lualine_y = {'progress'},
-    lualine_z = {'location'}
+    lualine_b = {},
+    lualine_c = {},
+    lualine_x = {},
+    lualine_y = { 'filetype','encoding', 'fileformat',},
+    lualine_z = {}
   },
   tabline = {
     lualine_a = {{
@@ -58,7 +67,7 @@ return {
     }},
     lualine_b = {calculateDate, 'branch', 'diff', 'diagnostics'},
     lualine_c = {},
-    lualine_x = {'encoding', 'fileformat', 'filetype'},
+    lualine_x = {},
     lualine_y = {'progress'},
     lualine_z = {'location'}
   },

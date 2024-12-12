@@ -42,7 +42,6 @@ return {
     local parseArg = function (index)
       return f(function (arg)
         local parts = split(arg[1][1], ".");
-        print(parts[#parts]);
         return parts[#parts] or "";
       end, {index})
     end
@@ -55,8 +54,6 @@ return {
         local lines = vim.api.nvim_buf_get_lines(0, 0, -1, false)
         for _, line in ipairs(lines) do 
           if line:match("local ") then
-            print("LINE-------------")
-            print(line)
             table.insert(nodes, t(line))
           end
         end

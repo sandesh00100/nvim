@@ -2,6 +2,28 @@ local source = {}
 local cmp =  require('cmp')
 
 function source:canAutoComplete(line, cursorCol)
+  local hasLeftBrackets = false
+  local curIdx = cursorCol
+  while curIdx > 1 and not hasLeftBrackets do
+    local curChar = line:sub(curIdx, curIdx)
+    local nextChar = line:sub(curIdx-1, curIdx-1)
+    if curChar == '[' and nextChar == '[' then
+      hasLeftBrackets = true
+    end
+    curIdx = curIdx-1
+  end
+
+  local hasRightBrackets = false
+  curIdx = cursorCol
+  while curIdx < #line and not hasRightBrackets do
+    local curChar = line:sub(curIdx, curIdx)
+    local nextChar = line:sub(curIdx+1, curIdx+1)
+    if curChar == ']' and nextChar == ']' then
+      hasRightBrackets = true
+    end
+    curIdx = curIdx + 1
+  end
+  return hasLeftBrackets and hasRightBrackets
 end
 
 function source.new()
@@ -47,16 +69,21 @@ function source:complete(params, callback)
     fileReferences = cachedFileReferences
   end
   -- get current line from buffer
-  local line = vim.api.nvim_get_current_line()
-  local cursorCol = vim.api.nvim_win_get_cursor(0)[2]
+  local currentLine = vim.api.nvim_get_current_line()
+  local cursorCol = vim.api.nvim_win_get_cursor(0)[2] + 1
   -- check if line contains [[
-  if string.match(line, '%[%[') then
+  if self:canAutoComplete(currentLine, cursorCol) then
     callback({items = fileReferences, isIncomplete = true})
-    return
   else
     callback({items = {}, isIncomplete = true})
-    return
   end
+  -- if string.match(line, '%[%[') then
+  --   callback({items = fileReferences, isIncomplete = true})
+  --   return
+  -- else
+  --   callback({items = {}, isIncomplete = true})
+  --   return
+  -- end
 end
 
 ---Resolve completion item (optional). This is called right before the completion is about to be displayed.

@@ -160,7 +160,6 @@ vim.keymap.set('n', '<leader>rp', dap.repl.open, {});
 -- TODO: Need to follow https://www.youtube.com/watch?v=kbRIosrvof0&t=489s for having method level debug 
 -- TODO: Setting up debugger, might want to move some of this into it's own lua file
 config['on_attach'] = function(client, bufnr)
-  print("Attaching")
   vim.keymap.set('n', 'gd', '<Cmd>lua vim.lsp.buf.definition()<CR>', {noremap=true, silent=true})
   jdtls.setup_dap({hotcodereplace='auto'})
   jdtls.dap.setup_dap_main_class_configs()
