@@ -49,6 +49,7 @@
   "render-markdown": { "branch": "main", "commit": "5e4e33102b784353998c83d57dbacea4db71d55b" },
   "telescope-dap.nvim": { "branch": "master", "commit": "8c88d9716c91eaef1cdea13cb9390d8ef447dbfe" },
   "telescope.nvim": { "branch": "master", "commit": "776b509f80dd49d8205b9b0d94485568236d1192" },
+  "tiny-glimmer.nvim": { "branch": "main", "commit": "2550913ce7185b77dc9e603a7ef5aeb5a095a385" },
   "transparent.nvim": { "branch": "main", "commit": "2c78d94448b534c35ca1d88a3bae90b1cd1a3d4d" },
   "trouble.nvim": { "branch": "main", "commit": "6efc446226679fda0547c0fd6a7892fd5f5b15d8" },
   "undotree": { "branch": "master", "commit": "56c684a805fe948936cda0d1b19505b84ad7e065" },
