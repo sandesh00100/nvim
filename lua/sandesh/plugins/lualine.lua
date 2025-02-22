@@ -1,4 +1,5 @@
-local listFunctions = {}
+-- local fileTypeToIntervalToMethodName = {}
+
 local function getHarpoon()
  local marks = require('harpoon').get_mark_config().marks
  local total_marks = {}
@@ -34,28 +35,97 @@ local function getHarpoon()
 
   return table.concat(output, " | ")
 end
+local function getRoot(buffnr, language)
+  local parser = vim.treesitter.get_parser(buffnr, language, {})
+  local tree = parser:parse()[1]
+  return tree:root()
+end
 
 local function getFunction()
-  if vim.bo.filetype == 'lua' then
-    local currentBuff = vim.api.nvim_get_current_buf()
-    local ts_utils = require 'nvim-treesitter.ts_utils'
-    local currentNode = ts_utils.get_node_at_cursor()
-    while currentNode do
-      if currentNode:type() == "function_declaration" or currentNode:type() == "method_declaration" then
-        local name_node = currentNode:child(2) -- This depends on the language
-        local nodeValue = vim.treesitter.get_node_text(name_node, currentBuff)
-        listFunctions[nodeValue] = true
-        local length = 0
-        for _ in pairs(listFunctions) do
-          length = length + 1
-          print("Lenght " .. length)
+  local buffnr = vim.api.nvim_get_current_buf()
+  if vim.bo[buffnr].filetype == 'lua' then
+    local intervalToMethodName = fileTypeToIntervalToMethodName['lua']
+    if intervalToMethodName ~= nil then
+      -- get interval map from memory
+      for key, value in pairs(intervalToMethodName) do
+        local start_line = key[1]
+        local end_line = key[2]
+        local line_number = vim.api.nvim_win_get_cursor(0)[1]
+        if start_line <= line_number and end_line >= line_number then
+          return value
         end
-        return nodeValue
       end
-      currentNode = currentNode:parent()
-    end
+    end 
   end
   return ''
+end
+
+local function buildLuaFunctionMap(buffnr)
+    -- TODO: Fix this if we upgrade to 10.0
+    local query = vim.treesitter.query.parse_query("lua", [[
+      (function_declaration) @dec
+    ]])
+    local root = getRoot(buffnr, 'lua')
+    local intervalToMethodName = fileTypeToIntervalToMethodName['lua']
+    if intervalToMethodName == nil then
+      intervalToMethodName = {}
+      fileTypeToIntervalToMethodName['lua'] = intervalToMethodName
+    end
+    for id, node in query:iter_captures(root, buffnr, 0, -1) do
+      if query.captures[id] == 'dec' then
+        local name_node = node:field("name")[1]  -- The name is a field of the function_definition node
+        -- for some reason these ranges are 0 based
+        local function_start_row, _, function_end_row, _ = node:range()
+
+        -- Get the range of the name node (start and end positions)
+        local name_start_row, name_start_column, name_end_row, name_end_column = name_node:range()
+
+        -- Get the text of the function name
+        local function_name = vim.api.nvim_buf_get_text(buffnr, name_start_row, name_start_column, name_end_row, name_end_column, {})[1]
+        intervalToMethodName[{function_start_row+1, function_end_row+1}] = function_name
+      end
+    end
+end
+
+-- vim.api.nvim_create_autocmd({ "BufEnter" , "BufWritePost"}, {
+--     group = vim.api.nvim_create_augroup("lualine-enter-update", {clear = true}),
+--     pattern = "*",
+--     callback = function()
+--       -- case statement lua
+--       local buffnr = vim.api.nvim_get_current_buf()
+--       local fileType = vim.bo[buffnr].filetype
+--       if vim.bo[buffnr].filetype == 'lua' then
+--         buildLuaFunctionMap(buffnr)
+--       end
+--     end
+-- })
+--
+
+local function getMethod()
+    local ts_utils = require 'nvim-treesitter.ts_utils'
+    local node = ts_utils.get_node_at_cursor()
+    local buffNr = vim.api.nvim_get_current_buf()
+    local line_number = vim.api.nvim_win_get_cursor(0)[1]
+    local file_type = vim.bo[buffNr].filetype
+    if file_type == 'lua' or file_type == 'java' or file_type == 'python' or file_type == 'typescript' then
+      while node do
+        local nodeType = node:type()
+        if node:type() == 'method_declaration' or node:type() == 'function_declaration' or node:type() == 'function_definition' or node:type() == 'method_definition' then
+          local start_row, start_col, end_row, end_col = node:range()
+
+          if line_number >= start_row + 1 and line_number <= end_row + 1 then
+            local name_node = node:field("name")[1]
+            local start_row_name, start_col_name, end_row_name, end_col_name = name_node:range()
+            -- return function name
+            return vim.api.nvim_buf_get_text(buffNr, start_row_name, start_col_name, end_row_name, end_col_name, {})[1] .. "()"
+          else 
+            return ''
+          end
+        end
+        node = node:parent()
+      end
+    end
+    return ''
 end
 
 local function calculateDate()
@@ -102,14 +172,6 @@ return {
     }
   },
   sections = {
-    lualine_a = {'mode'},
-    lualine_b = {},
-    lualine_c = {},
-    lualine_x = {},
-    lualine_y = { 'filetype','encoding', 'fileformat',},
-    lualine_z = {}
-  },
-  tabline = {
     lualine_a = {{
       'filename',
       file_status = true,      -- Displays file status (readonly status, modified status)
@@ -124,7 +186,15 @@ return {
         unnamed = '[No Name]', -- Text to show for unnamed buffers.
         newfile = '[New]',     -- Text to show for newly created file before first write
       }
-    }, getFunction},
+    },'mode'},
+    lualine_b = {},
+    lualine_c = {},
+    lualine_x = {},
+    lualine_y = { 'filetype','encoding', 'fileformat',},
+    lualine_z = {}
+  },
+  tabline = {
+    lualine_a = {'filename', getMethod},
     lualine_b = {calculateDate, getHarpoon},
     lualine_c = {'branch', 'diff', 'diagnostics'},
     lualine_x = {},
