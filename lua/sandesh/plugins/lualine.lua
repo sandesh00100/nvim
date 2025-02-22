@@ -1,25 +1,25 @@
--- local fileTypeToIntervalToMethodName = {}
+local markdownIntervalTree = {}
 
 local function getHarpoon()
- local marks = require('harpoon').get_mark_config().marks
- local total_marks = {}
- for _, file in ipairs(marks) do
-   local name = vim.fn.fnamemodify(file.filename, ":t")
-   table.insert(total_marks, name)
- end
- if total_marks == 0 then
+  local marks = require('harpoon').get_mark_config().marks
+  local total_marks = {}
+  for _, file in ipairs(marks) do
+    local name = vim.fn.fnamemodify(file.filename, ":t")
+    table.insert(total_marks, name)
+  end
+  if total_marks == 0 then
     return ""
   end
 
   local nvim_mode = vim.api.nvim_get_mode().mode:sub(1, 1)
   local hp_keymap = {"h", "j", "k", "l"}
   local hl_normal = nvim_mode == "n" and "%#lualine_b_normal#"
-    or nvim_mode == "i" and "%#lualine_b_insert#"
-    or nvim_mode == "c" and "%#lualine_b_command#"
-    or "%#lualine_b_visual#"
+  or nvim_mode == "i" and "%#lualine_b_insert#"
+  or nvim_mode == "c" and "%#lualine_b_command#"
+  or "%#lualine_b_visual#"
   local hl_selected = string.find("vV", nvim_mode)
-      and "%#lualine_transitional_lualine_a_visual_to_lualine_b_visual#"
-    or "%#lualine_b_diagnostics_warn_normal#"
+  and "%#lualine_transitional_lualine_a_visual_to_lualine_b_visual#"
+  or "%#lualine_b_diagnostics_warn_normal#"
 
   local full_name = vim.api.nvim_buf_get_name(0)
   local buffer_name = vim.fn.expand("%:t")
@@ -31,75 +31,58 @@ local function getHarpoon()
     else
       table.insert(output, "(" .. hp_keymap[index] .. ")" .. mark)
     end
+    return table.concat(output, " | ")
   end
-
-  return table.concat(output, " | ")
 end
+
 local function getRoot(buffnr, language)
   local parser = vim.treesitter.get_parser(buffnr, language, {})
   local tree = parser:parse()[1]
   return tree:root()
 end
 
-local function getFunction()
-  local buffnr = vim.api.nvim_get_current_buf()
-  if vim.bo[buffnr].filetype == 'lua' then
-    local intervalToMethodName = fileTypeToIntervalToMethodName['lua']
-    if intervalToMethodName ~= nil then
-      -- get interval map from memory
-      for key, value in pairs(intervalToMethodName) do
-        local start_line = key[1]
-        local end_line = key[2]
-        local line_number = vim.api.nvim_win_get_cursor(0)[1]
-        if start_line <= line_number and end_line >= line_number then
-          return value
-        end
-      end
-    end 
-  end
-  return ''
+local function getNodeText(node, buffnr)
+  -- Get the range of the name node (start and end positions)
+  local name_start_row, name_start_column, name_end_row, name_end_column = node:range()
+  -- Get the text 
+  return vim.api.nvim_buf_get_text(buffnr, name_start_row, name_start_column, name_end_row, name_end_column, {})[1]
 end
 
-local function buildLuaFunctionMap(buffnr)
+local function buildMarkdownMap(buffnr)
     -- TODO: Fix this if we upgrade to 10.0
-    local query = vim.treesitter.query.parse_query("lua", [[
-      (function_declaration) @dec
+    local query = vim.treesitter.query.parse_query("markdown", [[
+      (section) @sec
     ]])
-    local root = getRoot(buffnr, 'lua')
-    local intervalToMethodName = fileTypeToIntervalToMethodName['lua']
-    if intervalToMethodName == nil then
-      intervalToMethodName = {}
-      fileTypeToIntervalToMethodName['lua'] = intervalToMethodName
-    end
+
+    local root = getRoot(buffnr, 'markdown')
+
     for id, node in query:iter_captures(root, buffnr, 0, -1) do
-      if query.captures[id] == 'dec' then
-        local name_node = node:field("name")[1]  -- The name is a field of the function_definition node
+      if query.captures[id] == 'sec' and node:parent() == root then
+        local atx_heading = node:child(0)
+        local name_node = atx_heading:field("heading_content")[1]  -- The name is a field of the function_definition node
         -- for some reason these ranges are 0 based
         local function_start_row, _, function_end_row, _ = node:range()
-
-        -- Get the range of the name node (start and end positions)
-        local name_start_row, name_start_column, name_end_row, name_end_column = name_node:range()
-
-        -- Get the text of the function name
-        local function_name = vim.api.nvim_buf_get_text(buffnr, name_start_row, name_start_column, name_end_row, name_end_column, {})[1]
-        intervalToMethodName[{function_start_row+1, function_end_row+1}] = function_name
+        local sectionNode = {}
+        markdownIntervalTree[{function_start_row+1, function_end_row+1}] = sectionNode
+        sectionNode["name"] = getNodeText(name_node, buffnr)
       end
     end
 end
 
--- vim.api.nvim_create_autocmd({ "BufEnter" , "BufWritePost"}, {
---     group = vim.api.nvim_create_augroup("lualine-enter-update", {clear = true}),
---     pattern = "*",
---     callback = function()
---       -- case statement lua
---       local buffnr = vim.api.nvim_get_current_buf()
---       local fileType = vim.bo[buffnr].filetype
---       if vim.bo[buffnr].filetype == 'lua' then
---         buildLuaFunctionMap(buffnr)
---       end
---     end
--- })
---
+
+vim.api.nvim_create_autocmd({ "BufEnter" , "BufWritePost"}, {
+    group = vim.api.nvim_create_augroup("lualine-enter-update", {clear = true}),
+    pattern = "*",
+    callback = function()
+      -- case statement lua
+      local buffnr = vim.api.nvim_get_current_buf()
+      local fileType = vim.bo[buffnr].filetype
+      if fileType == 'markdown' then
+        buildMarkdownMap(buffnr)
+      end
+    end
+})
+
 
 local function getMethod()
     local ts_utils = require 'nvim-treesitter.ts_utils'
@@ -107,9 +90,9 @@ local function getMethod()
     local buffNr = vim.api.nvim_get_current_buf()
     local line_number = vim.api.nvim_win_get_cursor(0)[1]
     local file_type = vim.bo[buffNr].filetype
+    -- if it's a programming language and we just need the method we're in
     if file_type == 'lua' or file_type == 'java' or file_type == 'python' or file_type == 'typescript' then
       while node do
-        local nodeType = node:type()
         if node:type() == 'method_declaration' or node:type() == 'function_declaration' or node:type() == 'function_definition' or node:type() == 'method_definition' then
           local start_row, start_col, end_row, end_col = node:range()
 
@@ -123,6 +106,14 @@ local function getMethod()
           end
         end
         node = node:parent()
+      end
+    elseif file_type == 'markdown' then
+      for key, value in pairs(markdownIntervalTree) do
+        local start_line = key[1]
+        local end_line = key[2]
+        if start_line <= line_number and end_line >= line_number then
+          return value["name"]
+        end
       end
     end
     return ''
@@ -206,4 +197,3 @@ return {
   extensions = {}
   }
 }
-
