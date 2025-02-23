@@ -48,6 +48,17 @@ local function getNodeText(node, buffnr)
   return vim.api.nvim_buf_get_text(buffnr, name_start_row, name_start_column, name_end_row, name_end_column, {})[1]
 end
 
+local function findSection(line_number, intervalMap)
+  for interval, section in pairs(intervalMap) do
+    local start_line = interval[1]
+    local end_line = interval[2]
+    if start_line <= line_number and end_line >= line_number then
+      return section
+    end
+  end
+  return nil
+end
+
 local function getMethod()
     local ts_utils = require 'nvim-treesitter.ts_utils'
     local node = ts_utils.get_node_at_cursor()
@@ -72,13 +83,22 @@ local function getMethod()
         node = node:parent()
       end
     elseif file_type == 'markdown' then
-      for key, value in pairs(markdownIntervalTree) do
-        local start_line = key[1]
-        local end_line = key[2]
-        if start_line <= line_number and end_line >= line_number then
-          return value["name"]
+      local currentIntervalMap = markdownIntervalTree
+      local markdownPath = ''
+      while currentIntervalMap ~= nil do
+        local section = findSection(line_number, currentIntervalMap)
+        if section == nil then
+          return markdownPath
         end
+
+        if #markdownPath > 1 then
+          markdownPath = markdownPath .. " ➤ "
+        end
+
+        markdownPath = markdownPath ..  section['name']
+        currentIntervalMap = section['children']
       end
+      return markdownPath
     end
     return ''
 end
@@ -91,6 +111,10 @@ end
 
 local function getSection(node, buffnr)
   if node == nil or node:type() ~= 'section' then
+    return nil
+  end
+
+  if node:child_count() == 0 or node:child(0):field("heading_content") == nil then
     return nil
   end
 
@@ -122,7 +146,7 @@ local function buildMarkdownMap(buffnr)
     ]])
 
     local root = getRoot(buffnr, 'markdown')
-
+    markdownIntervalTree = {}
     for id, node in query:iter_captures(root, buffnr, 0, -1) do
       if query.captures[id] == 'sec' and node:parent() == root then
         local function_start_row, _, function_end_row, _ = node:range()
@@ -182,9 +206,9 @@ return {
     always_show_tabline = true,
     globalstatus = false,
     refresh = {
-      statusline = 100,
-      tabline = 100,
-      winbar = 100,
+      statusline = 500,
+      tabline = 500,
+      winbar = 500,
     }
   },
   sections = {
