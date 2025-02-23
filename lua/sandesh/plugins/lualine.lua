@@ -1,25 +1,25 @@
 local markdownIntervalTree = {}
 
 local function getHarpoon()
-  local marks = require('harpoon').get_mark_config().marks
-  local total_marks = {}
-  for _, file in ipairs(marks) do
-    local name = vim.fn.fnamemodify(file.filename, ":t")
-    table.insert(total_marks, name)
-  end
-  if total_marks == 0 then
+ local marks = require('harpoon').get_mark_config().marks
+ local total_marks = {}
+ for _, file in ipairs(marks) do
+   local name = vim.fn.fnamemodify(file.filename, ":t")
+   table.insert(total_marks, name)
+ end
+ if total_marks == 0 then
     return ""
   end
 
   local nvim_mode = vim.api.nvim_get_mode().mode:sub(1, 1)
   local hp_keymap = {"h", "j", "k", "l"}
   local hl_normal = nvim_mode == "n" and "%#lualine_b_normal#"
-  or nvim_mode == "i" and "%#lualine_b_insert#"
-  or nvim_mode == "c" and "%#lualine_b_command#"
-  or "%#lualine_b_visual#"
+    or nvim_mode == "i" and "%#lualine_b_insert#"
+    or nvim_mode == "c" and "%#lualine_b_command#"
+    or "%#lualine_b_visual#"
   local hl_selected = string.find("vV", nvim_mode)
-  and "%#lualine_transitional_lualine_a_visual_to_lualine_b_visual#"
-  or "%#lualine_b_diagnostics_warn_normal#"
+      and "%#lualine_transitional_lualine_a_visual_to_lualine_b_visual#"
+    or "%#lualine_b_diagnostics_warn_normal#"
 
   local full_name = vim.api.nvim_buf_get_name(0)
   local buffer_name = vim.fn.expand("%:t")
@@ -27,12 +27,12 @@ local function getHarpoon()
   for index = 1, #total_marks do
     local mark = total_marks[index]
     if mark == buffer_name or mark == full_name then
-      table.insert(output, hl_selected ..  '('..hp_keymap[index]..')選ばれた' .. hl_normal)
+      -- table.insert(output, '('..hp_keymap[index]..')選ばれた')
     else
       table.insert(output, "(" .. hp_keymap[index] .. ")" .. mark)
     end
-    return table.concat(output, " | ")
   end
+  return table.concat(output, " | ")
 end
 
 local function getRoot(buffnr, language)
@@ -155,7 +155,7 @@ local function buildMarkdownMap(buffnr)
     end
 end
 
-local function calculateDate()
+local function calculateDay()
   local file_name = vim.fn.expand("%:t")
   local year, month, day = file_name:match("(%d+)-(%d+)-(%d+)")
   local day_to_symbol = {
@@ -234,8 +234,8 @@ return {
     lualine_z = {}
   },
   tabline = {
-    lualine_a = {'filename', getMethod},
-    lualine_b = {calculateDate, getHarpoon},
+    lualine_a = {calculateDay, 'filename', getMethod},
+    lualine_b = {getHarpoon},
     lualine_c = {'branch', 'diff', 'diagnostics'},
     lualine_x = {},
     lualine_y = {'progress'},
