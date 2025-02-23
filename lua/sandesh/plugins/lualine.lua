@@ -48,42 +48,6 @@ local function getNodeText(node, buffnr)
   return vim.api.nvim_buf_get_text(buffnr, name_start_row, name_start_column, name_end_row, name_end_column, {})[1]
 end
 
-local function buildMarkdownMap(buffnr)
-    -- TODO: Fix this if we upgrade to 10.0
-    local query = vim.treesitter.query.parse_query("markdown", [[
-      (section) @sec
-    ]])
-
-    local root = getRoot(buffnr, 'markdown')
-
-    for id, node in query:iter_captures(root, buffnr, 0, -1) do
-      if query.captures[id] == 'sec' and node:parent() == root then
-        local atx_heading = node:child(0)
-        local name_node = atx_heading:field("heading_content")[1]  -- The name is a field of the function_definition node
-        -- for some reason these ranges are 0 based
-        local function_start_row, _, function_end_row, _ = node:range()
-        local sectionNode = {}
-        markdownIntervalTree[{function_start_row+1, function_end_row+1}] = sectionNode
-        sectionNode["name"] = getNodeText(name_node, buffnr)
-      end
-    end
-end
-
-
-vim.api.nvim_create_autocmd({ "BufEnter" , "BufWritePost"}, {
-    group = vim.api.nvim_create_augroup("lualine-enter-update", {clear = true}),
-    pattern = "*",
-    callback = function()
-      -- case statement lua
-      local buffnr = vim.api.nvim_get_current_buf()
-      local fileType = vim.bo[buffnr].filetype
-      if fileType == 'markdown' then
-        buildMarkdownMap(buffnr)
-      end
-    end
-})
-
-
 local function getMethod()
     local ts_utils = require 'nvim-treesitter.ts_utils'
     local node = ts_utils.get_node_at_cursor()
@@ -119,6 +83,54 @@ local function getMethod()
     return ''
 end
 
+local function getSectionText(node, buffnr)
+  local atx_heading = node:child(0)
+  local name_node = atx_heading:field("heading_content")[1]
+  return getNodeText(name_node, buffnr)
+end
+
+local function getSection(node, buffnr)
+  if node == nil or node:type() ~= 'section' then
+    return nil
+  end
+
+  local sectionNode = {}
+  sectionNode["name"] = getSectionText(node, buffnr)
+
+  for childNode in node:iter_children() do
+    local childSection  = getSection(childNode, buffnr)
+    if childSection ~= nil then
+      -- Make sure section has children
+      local children = sectionNode["children"]
+
+      if children == nil then
+        children = {}
+        sectionNode["children"] = children
+      end
+
+      local function_start_row, _, function_end_row, _ = childNode:range()
+      children[{function_start_row+1, function_end_row+1}] = childSection
+    end
+  end
+  return sectionNode
+end
+
+local function buildMarkdownMap(buffnr)
+    -- TODO: Fix this if we upgrade to 10.0
+    local query = vim.treesitter.query.parse_query("markdown", [[
+      (section) @sec
+    ]])
+
+    local root = getRoot(buffnr, 'markdown')
+
+    for id, node in query:iter_captures(root, buffnr, 0, -1) do
+      if query.captures[id] == 'sec' and node:parent() == root then
+        local function_start_row, _, function_end_row, _ = node:range()
+        markdownIntervalTree[{function_start_row+1, function_end_row+1}] = getSection(node, buffnr)
+      end
+    end
+end
+
 local function calculateDate()
   local file_name = vim.fn.expand("%:t")
   local year, month, day = file_name:match("(%d+)-(%d+)-(%d+)")
@@ -138,6 +150,19 @@ local function calculateDate()
   end
   return ""
 end
+
+vim.api.nvim_create_autocmd({ "BufEnter" , "BufWritePost"}, {
+    group = vim.api.nvim_create_augroup("lualine-enter-update", {clear = true}),
+    pattern = "*",
+    callback = function()
+      -- case statement lua
+      local buffnr = vim.api.nvim_get_current_buf()
+      local fileType = vim.bo[buffnr].filetype
+      if fileType == 'markdown' then
+        buildMarkdownMap(buffnr)
+      end
+    end
+})
 
 return {
   'nvim-lualine/lualine.nvim',
