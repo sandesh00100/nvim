@@ -18,16 +18,16 @@ vim.api.nvim_create_autocmd('LspAttach', {
 vim.keymap.set("n", "<ESC>", "<cmd>:noh<CR>")
 
 -- Center the screen while navigating 
-vim.keymap.set("n", "<C-d>", "<C-d>zz")
-vim.keymap.set("n", "<C-u>", "<C-u>zz")
-vim.keymap.set("n", "k", "kzz")
-vim.keymap.set("n", "j", "jzz")
-vim.keymap.set("n", "n", "nzz")
-vim.keymap.set("n", "N", "Nzz")
-vim.keymap.set("n", "}", "}zz")
-vim.keymap.set("n", "{", "{zz")
-vim.keymap.set("n", ")", ")zz")
-vim.keymap.set("n", "(", "(zz")
+-- vim.keymap.set("n", "<C-d>", "<C-d>zz")
+-- vim.keymap.set("n", "<C-u>", "<C-u>zz")
+-- vim.keymap.set("n", "k", "kzz")
+-- vim.keymap.set("n", "j", "jzz")
+-- vim.keymap.set("n", "n", "nzz")
+-- vim.keymap.set("n", "N", "Nzz")
+-- vim.keymap.set("n", "}", "}zz")
+-- vim.keymap.set("n", "{", "{zz")
+-- vim.keymap.set("n", ")", ")zz")
+-- vim.keymap.set("n", "(", "(zz")
 
 vim.keymap.set("n", "<S-l>", "<cmd>:cnext<CR>")
 vim.keymap.set("n", "<S-h>", "<cmd>:cprev<CR>")
@@ -117,6 +117,13 @@ vim.keymap.set("n", "<leader>qc",function ()
   end
 end)
 
+-- center 
+vim.api.nvim_create_augroup('CenterBuffer', { clear = true })
+vim.api.nvim_create_autocmd('CursorMoved', {
+  group = 'CenterBuffer',
+  pattern = '*',
+  command = 'normal! zz',
+})
 
 
   -- local quickfix_list = vim.fn.getqflist()

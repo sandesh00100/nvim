@@ -1,5 +1,8 @@
 local cmp = require('cmp')
 local luasnip = require('luasnip')
+local bufNewFileCache = {}
+
+
 require('luasnip.loaders.from_vscode').lazy_load()
 luasnip.config.setup({})
 -- rg "project: " | awk -F ': ' '$2 !=""  {print $2}' | sort | uniq
@@ -67,9 +70,9 @@ cmp.setup.filetype('markdown', {
     { name = "path" }, -- file system paths
   })
 })
-
+vim.api.nvim_create_augroup("markdown-completion", {clear = true})
 vim.api.nvim_create_autocmd("BufEnter", {
-    group = vim.api.nvim_create_augroup("markdown-completion", {clear = true}),
+    group = "markdown-completion",
     pattern = "*.md",
     callback = function()
       vim.schedule(function ()
@@ -79,15 +82,47 @@ vim.api.nvim_create_autocmd("BufEnter", {
     end,
 })
 
-vim.api.nvim_create_autocmd("VimEnter",{
-  group = vim.api.nvim_create_augroup("cmp_fileNames",{clear = true}),
+local function parseMarkdownHeaders(cwd)
+  vim.fn.system("/Users/sandeshshrestha/git/scripts/parseMarkdownFile.py -f " .. cwd .. "| sort | uniq > /tmp/fileCompletion.txt")
+  vim.notify("Completed file parsing")
+end
+
+vim.api.nvim_create_autocmd("BufNewFile", {
+    group = "markdown-completion",
+    pattern = "*.md",
+    callback = function()
+      local bufnr = vim.api.nvim_get_current_buf()
+      if bufNewFileCache[bufnr] == nil then
+        bufNewFileCache[bufnr] = true
+      end
+    end,
+})
+
+
+vim.api.nvim_create_autocmd({"VimEnter"},{
+  group = "markdown-completion",
   pattern = "*/Notes/*",
   callback = function ()
     vim.schedule(function ()
       -- get the currrent working dir
       local cwd = vim.fn.getcwd()
-      vim.fn.system("/Users/sandeshshrestha/git/scripts/parseMarkdownFile.py -f " .. cwd .. "| sort | uniq > /tmp/fileCompletion.txt")
-      vim.notify("Completed initial file completion file")
+      parseMarkdownHeaders(cwd)
     end)
+  end
+})
+
+
+vim.api.nvim_create_autocmd({"BufWritePost"},{
+  group = "markdown-completion",
+  pattern = "*/Notes/*",
+  callback = function ()
+    local bufnr = vim.api.nvim_get_current_buf()
+    if bufNewFileCache[bufnr] == true then
+      vim.schedule(function ()
+        local cwd = vim.fn.getcwd()
+        parseMarkdownHeaders(cwd)
+        bufNewFileCache[bufnr] = false
+      end)
+    end
   end
 })

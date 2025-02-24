@@ -27,7 +27,7 @@ local function getHarpoon()
   for index = 1, #total_marks do
     local mark = total_marks[index]
     if mark == buffer_name or mark == full_name then
-      -- table.insert(output, '('..hp_keymap[index]..')選ばれた')
+      table.insert(output, hl_normal .. '('..hp_keymap[index]..')選ばれた' .. hl_normal)
     else
       table.insert(output, "(" .. hp_keymap[index] .. ")" .. mark)
     end
@@ -114,7 +114,7 @@ local function getSection(node, buffnr)
     return nil
   end
 
-  if node:child_count() == 0 or node:child(0):field("heading_content") == nil then
+  if node:child_count() == 0 or node:child(0):field("heading_content") == nil or node:child(0):field("heading_content")[1] == nil then
     return nil
   end
 
@@ -150,7 +150,10 @@ local function buildMarkdownMap(buffnr)
     for id, node in query:iter_captures(root, buffnr, 0, -1) do
       if query.captures[id] == 'sec' and node:parent() == root then
         local function_start_row, _, function_end_row, _ = node:range()
-        markdownIntervalTree[{function_start_row+1, function_end_row+1}] = getSection(node, buffnr)
+        local section = getSection(node, buffnr)
+        if section ~= nil then
+          markdownIntervalTree[{function_start_row+1, function_end_row+1}] = getSection(node, buffnr)
+        end
       end
     end
 end
