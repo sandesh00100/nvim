@@ -2,7 +2,6 @@ local cmp = require('cmp')
 local luasnip = require('luasnip')
 local bufNewFileCache = {}
 
-
 require('luasnip.loaders.from_vscode').lazy_load()
 luasnip.config.setup({})
 -- rg "project: " | awk -F ': ' '$2 !=""  {print $2}' | sort | uniq

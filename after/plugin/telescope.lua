@@ -17,15 +17,42 @@ local function getFileLines(fileName)
     return projects
 end
 
-local function buildRegexTable(currentTable, expression)
-end
-
 local function getProjects()
     return getFileLines("/tmp/project-cmp-source.txt")
 end
 
 local function getTags()
     return getFileLines("/tmp/project-cmp-source.txt")
+end
+
+local function findFilesWithRegex(regexList)
+  local findCommandList = {
+      '~/git/scripts/findAllExpressions.py', '-f' , '.'
+  }
+
+  table.insert(findCommandList, '-e')
+
+  -- combine list
+  table.move(regexList, 1, #regexList, #findCommandList + 1, findCommandList)
+  
+  -- execute command
+  local command = table.concat(findCommandList, " ")
+  local out = vim.fn.systemlist(command)
+  local qflist = {}
+
+  for _, value in pairs(out) do 
+    -- create a qf list
+    table.insert(qflist, {filename = value, text = value, lnum=1})
+  end
+
+  if (#qflist > 0) then
+    -- QUESTION: Could this be some other way to trigger telescope list?
+    vim.fn.setqflist(qflist)
+    require('telescope.builtin').quickfix({})
+  else
+    vim.notify("No Results")
+  end
+
 end
 
 vim.keymap.set("n", "<leader>tl", "<cmd>:Telescope<cr>")
@@ -265,15 +292,20 @@ vim.keymap.set('n', '<leader>os', function ()
     builtin.grep_string({search=regex, use_regex=true})
 end)
 
+vim.keymap.set('n', '<leader>oh', function ()
+  local regexList = {}
+
+  table.insert(regexList, [['^status:.*backlog\b.*']])
+  table.insert(regexList, [['^priority:.*\bHigh\b.*']])
+
+  findFilesWithRegex(regexList)
+end)
 
 vim.keymap.set('n', '<leader>of', function ()
   local priorities = {'High','Medium','Low'}
   local projects = getProjects();
-  local findCommand = {
-      '~/git/scripts/findAllExpressions.py', '-f' , '.'
-  };
-  table.insert(findCommand, '-e')
-  table.insert(findCommand, [['^status:.*backlog\b.*']])
+  local regexList = {}
+  table.insert(regexList, [['^status:.*backlog\b.*']])
 
   vim.ui.select(priorities,{
     prompt = "Priority",
@@ -281,7 +313,7 @@ vim.keymap.set('n', '<leader>of', function ()
   },
   function(selectedPriority)
     if (selectedPriority) then
-      table.insert(findCommand, [['^priority:.*\b]] .. selectedPriority .. [[\b.*']])
+      table.insert(regexList, [['^priority:.*\b]] .. selectedPriority .. [[\b.*']])
     end
     vim.ui.select(projects,{
       prompt = "Project",
@@ -289,20 +321,9 @@ vim.keymap.set('n', '<leader>of', function ()
     },
     function(selectedProject)
       if (selectedProject) then
-        table.insert(findCommand, [['^project:.*\b]] .. selectedProject .. [[\b.*']])
+        table.insert(regexList, [['^project:.*\b]] .. selectedProject .. [[\b.*']])
       end
-      local command = table.concat(findCommand, " ")
-      local out = vim.fn.systemlist(command)
-      local qflist = {}
-      for _, value in pairs(out) do 
-        table.insert(qflist, {filename = value, text = value, lnum=1})
-      end
-      if (#qflist > 0) then
-        vim.fn.setqflist(qflist)
-        require('telescope.builtin').quickfix({})
-      else
-        vim.notify("No Results")
-      end
+      findFilesWithRegex(regexList)
     end)
   end)
 end)
