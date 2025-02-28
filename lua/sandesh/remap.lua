@@ -40,7 +40,7 @@ vim.keymap.set("n", "<leader>xs", ":!%:p<CR>")
 vim.keymap.set("n", "<leader>qs",function ()
   local quickfix_list = vim.fn.getqflist()
     table.sort(quickfix_list, function(a, b)
-        return a.text < b.text
+        return a.lnum < b.lnum
     end)
     vim.fn.setqflist(quickfix_list)
 end)

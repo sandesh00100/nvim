@@ -1,3 +1,4 @@
+
 -- There is a faster way to do this but it'd be stupid to add that complexity
 local setCursorToNearestLink = function ()
   -- coded
@@ -103,3 +104,54 @@ end, {desc = "Create a new markdown file"})
 
 -- Checkbox
 vim.keymap.set("n", "<leader>ch", vim.cmd.ObsidianToggleCheckbox)
+
+vim.keymap.set('n', '<leader>it', function ()
+  vim.fn.jobstart("~/git/scripts/collectMarkdownChecklist.py -f 'Daily Notes' -n 2 -c 'General Thoughts'" , {
+    stdout_buffered = true,
+    stderr_buffered = true,
+    on_stdout = function (_, data, _)
+      local qfList = {}
+      for _, line in ipairs(data) do
+        local result = {}
+
+        -- Split by comma
+        for match in line:gmatch("[^,]+") do
+            table.insert(result, match)
+        end
+
+        local fileName = result[1]
+        local text = result[2]
+        local lineNum = result[3]
+
+        -- If everything is present then add it to the qf list
+        if fileName and text and lineNum then
+          local newitem = {filename = 'Daily Notes/' .. fileName, text = text, lnum=lineNum}
+          table.insert(qfList, newitem)
+        end
+      end
+
+    -- Primary sort on file name and secondary on line number
+    table.sort(qfList, function(a, b)
+        if a.filename ~= b.filename then
+          return a.filename < b.filename
+        end
+
+        return tonumber(a.lnum ) < tonumber(b.lnum)
+    end)
+
+    if #qfList > 0 then
+      vim.fn.setqflist(qfList)
+      vim.cmd("cc 1")
+    end
+
+  end,
+    on_stderr = function (_, data, _)
+      for _, line in ipairs(data) do
+        if line ~= "" then
+          print("STD ERR" .. line)
+        end
+      end
+    end
+  })
+end)
+

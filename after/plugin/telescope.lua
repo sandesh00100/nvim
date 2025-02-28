@@ -40,7 +40,7 @@ local function findFilesWithRegex(regexList)
   local out = vim.fn.systemlist(command)
   local qflist = {}
 
-  for _, value in pairs(out) do 
+  for _, value in pairs(out) do
     -- create a qf list
     table.insert(qflist, {filename = value, text = value, lnum=1})
   end
