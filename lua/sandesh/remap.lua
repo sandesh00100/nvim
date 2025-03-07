@@ -17,18 +17,6 @@ vim.api.nvim_create_autocmd('LspAttach', {
 
 vim.keymap.set("n", "<ESC>", "<cmd>:noh<CR>")
 
--- Center the screen while navigating 
--- vim.keymap.set("n", "<C-d>", "<C-d>zz")
--- vim.keymap.set("n", "<C-u>", "<C-u>zz")
--- vim.keymap.set("n", "k", "kzz")
--- vim.keymap.set("n", "j", "jzz")
--- vim.keymap.set("n", "n", "nzz")
--- vim.keymap.set("n", "N", "Nzz")
--- vim.keymap.set("n", "}", "}zz")
--- vim.keymap.set("n", "{", "{zz")
--- vim.keymap.set("n", ")", ")zz")
--- vim.keymap.set("n", "(", "(zz")
-
 vim.keymap.set("n", "<S-l>", "<cmd>:cnext<CR>")
 vim.keymap.set("n", "<S-h>", "<cmd>:cprev<CR>")
 
@@ -44,25 +32,6 @@ vim.keymap.set("n", "<leader>qs",function ()
     end)
     vim.fn.setqflist(quickfix_list)
 end)
-
--- bufnr	number of buffer that has the file name, use
--- 				bufname() to get the name
--- 			module	module name
--- 			lnum	line number in the buffer (first line is 1)
--- 			end_lnum
--- 				end of line number if the item is multiline
--- 			col	column number (first column is 1)
--- 			end_col	end of column number if the item has range
--- 			vcol	TRUE: "col" is visual column
--- 				FALSE: "col" is byte index
--- 			nr	error number
--- 			pattern	search pattern used to locate the error
--- 			text	description of the error
--- 			type	type of the error, 'E', '1', etc.
--- 			valid	TRUE: recognized error message
--- 			user_data
--- 				custom data associated with the item, can be
--- 				any type.
 
 vim.keymap.set("n", "<leader>qa",function ()
   local quickfix_list = vim.fn.getqflist()
@@ -117,6 +86,14 @@ vim.keymap.set("n", "<leader>qc",function ()
   end
 end)
 
+vim.keymap.set("n", "qc",function ()
+  vim.cmd("cclose")
+end)
+
+vim.keymap.set("n", "qo",function ()
+  vim.cmd("copen")
+end)
+
 -- center 
 vim.api.nvim_create_augroup('CenterBuffer', { clear = true })
 vim.api.nvim_create_autocmd('CursorMoved', {
@@ -124,18 +101,3 @@ vim.api.nvim_create_autocmd('CursorMoved', {
   pattern = '*',
   command = 'normal! zz',
 })
-
-
-  -- local quickfix_list = vim.fn.getqflist()
-  -- local new_qf_list = {}
-  --
-  -- for k, v in pairs(quickfix_list) do
-  --   local lineNbr;
-  --   local colNbr;
-  --   local fileName;
-  -- end
-  -- print(quickfix_list[1])
-  -- local cFileName = vim.fn.expand('%:p')
-  -- local newItem = {filename =  cFileName, lnum = 1, col = 1, text = filename}
-  -- table.insert(quickfix_list, newItem)
-  -- vim.fn.setqflist(quickfix_list)
